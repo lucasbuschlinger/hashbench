@@ -1,0 +1,6 @@
+[submodule "hashcat"]
+	path = hashcat
+	url = https://github.com/hashcat/hashcat.git
+[submodule "john"]
+	path = john
+	url = git://github.com/magnumripper/JohnTheRipper
