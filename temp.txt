@@ -1,0 +1,91 @@
+hashcat (ormat:%D) starting...
+
+[33m* Device #1: WARNING! Kernel exec timeout is not disabled.[0m
+[33m             This may cause "CL_OUT_OF_RESOURCES" or related errors.[0m
+[33m             To disable the timeout, see: https://hashcat.net/q/timeoutpatch[0m
+OpenCL Platform #1: NVIDIA Corporation
+======================================
+* Device #1: GeForce GTX 970, 1009/4036 MB allocatable, 13MCU
+
+Counting lines in hashcat/example0.hash...[2KCounted lines in hashcat/example0.hash...[2KParsing Hashes: 1/6494 (0.02%)...[2KParsed Hashes: 6494/6494 (100.00%)[2KSorting hashes...[2KSorted hashes...[2KRemoving duplicate hashes...[2KRemoved duplicate hashes...[2KSorting salts...[2KSorted salts...[2KComparing hashes with potfile entries...[2KCompared hashes with potfile entries...[2KGenerating bitmap tables...[2KGenerated bitmap tables...[2KHashes: 6494 digests; 6494 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+
+Applicable optimizers:
+* Zero-Byte
+* Early-Skip
+* Not-Salted
+* Not-Iterated
+* Single-Salt
+* Brute-Force
+* Raw-Hash
+
+Password length minimum: 0
+Password length maximum: 256
+
+[33mATTENTION! Pure (unoptimized) OpenCL kernels selected.[0m
+[33mThis enables cracking passwords and salts > length 32 but for the price of drastical reduced performance.[0m
+[33mIf you want to switch to optimized OpenCL kernels, append -O to your commandline.[0m
+[33m[0m
+Watchdog: Temperature abort trigger set to 90c
+Watchdog: Temperature retain trigger disabled.
+
+INFO: Removed 100 hashes found in potfile.
+
+Initializing device kernels and memory...[2KInitialized device kernels and memory...[2K
+
+
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit => [s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =>                                                           [33mApproaching final keyspace - workload adjusted.[0m
+[33m[0m
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =>                                                           
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Type........: MD5
+Hash.Target......: hashcat/example0.hash
+Time.Started.....: Mon Nov  6 21:41:15 2017 (0 secs)
+Time.Estimated...: Mon Nov  6 21:41:15 2017 (0 secs)
+Guess.Mask.......: ?a?a?a?a [4]
+Guess.Queue......: 1/7 (14.29%)
+Speed.Dev.#1.....:  1072.9 MH/s (6.00ms)
+Recovered........: 100/6494 (1.54%) Digests, 0/1 (0.00%) Salts
+Recovered/Time...: CUR:N/A,N/A,N/A AVG:0,0,0 (Min,Hour,Day)
+Progress.........: 81450625/81450625 (100.00%)
+Rejected.........: 0/81450625 (0.00%)
+Restore.Point....: 857375/857375 (100.00%)
+Candidates.#1....:  2z~ ->   ~}
+HWMon.Dev.#1.....: Temp: 53c Fan: 10% Util: 61% Core:1227MHz Mem:3004MHz Bus:16
+
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =>                                                           [33mApproaching final keyspace - workload adjusted.[0m
+[33m[0m
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =>                                                           
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Type........: MD5
+Hash.Target......: hashcat/example0.hash
+Time.Started.....: Mon Nov  6 21:41:15 2017 (6 secs)
+Time.Estimated...: Mon Nov  6 21:41:21 2017 (0 secs)
+Guess.Mask.......: ?a?a?a?a?a [5]
+Guess.Queue......: 2/7 (28.57%)
+Speed.Dev.#1.....:  1231.9 MH/s (8.94ms)
+Recovered........: 100/6494 (1.54%) Digests, 0/1 (0.00%) Salts
+Recovered/Time...: CUR:N/A,N/A,N/A AVG:0,0,0 (Min,Hour,Day)
+Progress.........: 7737809375/7737809375 (100.00%)
+Rejected.........: 0/7737809375 (0.00%)
+Restore.Point....: 81450625/81450625 (100.00%)
+Candidates.#1....:  u2]~ ->   ~}~
+HWMon.Dev.#1.....: Temp: 60c Fan: 20% Util: 98% Core:1316MHz Mem:3004MHz Bus:16
+
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =>                                                           [33mCracking performance lower than expected?[0m
+[33m[0m
+[33m* Append -O to the commandline.[0m
+[33m  This lowers the maximum supported password- and salt-length (typically down to 32).[0m
+[33m[0m
+[33m* Append -w 3 to the commandline.[0m
+[33m  This can cause your screen to lag.[0m
+[33m[0m
+[33m* Update your OpenCL runtime / driver the right way:[0m
+[33m  https://hashcat.net/faq/wrongdriver[0m
+[33m[0m
+[33m* Create more work items to make use of your parallelization power:[0m
+[33m  https://hashcat.net/faq/morework[0m
+[33m[0m
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit => 

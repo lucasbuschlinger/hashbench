@@ -2,6 +2,7 @@ import subprocess
 import argparse
 from usage import *
 from utils import *
+from bruteforce import *
 
 def main():
 
