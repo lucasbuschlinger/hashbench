@@ -7,10 +7,11 @@ from utils import *
 #   hash: type of hash, string
 #   min: minimal password length to be tested, integer
 #   max: maximum password length to be tested, integer
-def john_bruteforce(hash, min, max):
+#   hash_file: file containing the hash/hashes
+def john_bruteforce(hash, min, max, hash_file):
 
     #Spawn subprocess running an instance of john
-    process = subprocess.Popen(["./john/run/john", "--mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "-min-len={}".format(min), "-max-len={}".format(max), "example0.hash", "--format={}".format(hash), "--verbosity=1", "--progress-every=1"], universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    process = subprocess.Popen(["./john/run/john", "--mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "-min-len={}".format(min), "-max-len={}".format(max), hash_file, "--format={}".format(hash), "--verbosity=1", "--progress-every=1"], universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     #List to store the collected speeds
     speeds = []
@@ -45,10 +46,11 @@ def john_bruteforce(hash, min, max):
 #   hash: type of hash, integer
 #   min: minimal password length to be tested, integer
 #   max: maximum password length to be tested, integer
-def hashcat_bruteforce(hash, min, max):
+#   hash_file: file containing the hash/hashes
+def hashcat_bruteforce(hash, min, max, hash_file):
 
     #Spawn subprocess running an instance of hashcat
-    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), "example0.hash","?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     #List to store the collected speeds
     speeds = []

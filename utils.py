@@ -42,3 +42,19 @@ def unit_converter(value):
         else:
             #Might want to throw an exception here...
             print("NO VALID TYPE")
+
+#Helper to supply correct default hashfile to tools, if given
+def get_default_file(hash):
+    if(hash == 'md5'):
+        return "resources/md5.hash"
+    elif(hash == 'md4'):
+        return "resources/md4.hash"
+    else:
+        raise Exception('No default file for %s-hashes available! Please supply a file containing hashes!' % hash)
+
+#Printing own help
+def usage():
+    f = open('doc/usage.txt', 'r')
+    file_contents = f.read()
+    print(file_contents)
+    f.close()

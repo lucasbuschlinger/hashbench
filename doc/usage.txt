@@ -1,1 +1,3 @@
-options: []
+This software compares the efficiency of the tools hashcat and JohnTheRipper on cracking hashes.
+
+Usage: hash
