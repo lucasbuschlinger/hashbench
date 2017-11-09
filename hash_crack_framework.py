@@ -2,6 +2,7 @@ import subprocess
 import argparse
 from utils import *
 from bruteforce import *
+from wordlist import *
 
 def main():
 
@@ -13,6 +14,8 @@ def main():
     parser.add_argument('hash', default='md5', action='store', choices=['md4', 'md5', 'sha1', 'sha-256', 'sha-512'], help="The hashtype to performe a benchmark on.")
     #Parsing for path to supplied hash file, defaults
     parser.add_argument('-file', '-f', help="Path to a file containing hash(es)")
+
+    parser.add_argument('-rules', '-r', help="Path to rule file(s)")
 
     #This is the subparser to parse which mode has been selected (mode selection is required)
     subparsers = parser.add_subparsers(dest='mode', help="The mode to perfome a benchmark on.")
@@ -62,8 +65,12 @@ def main():
         print("Hashcat's speed was %fMH/s." % hashcat)
 
     if args.wordlist:
-        print("Benchmarking in wordlist mode.")
+        print("\nBenchmarking in wordlist mode.\n")
         print("=====\nNOT YET IMPLEMENTED\n=====")
+        john = john_wordlist(hash[0], hash_file, "resources/rockyou.wordlist", "KoreLogicRules")# wordlist_file)
+        hashcat = hashcat_wordlist(hash[1], hash_file, "resources/rockyou.wordlist", args.rules)#wordlist_file)
+        print("John's speed was %fMH/s." % john)
+        print("Hashcat's speed was %fMH/s." % hashcat)
 
 #Executing
 main()

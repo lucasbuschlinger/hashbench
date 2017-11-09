@@ -33,12 +33,12 @@ def unit_converter(value):
     if(value.endswith("M")):
         return float(value[:-1])
     else:
-        if(value.endswith("K")):
-            return float(value[:1])*1000
+        if(value.endswith("K") or value.endswith("k")):
+            return float(value[:-1])/1000
         elif(value.endswith("G")):
-            return float(value[:1])/1000
+            return float(value[:-1])*1000
         elif(value.isdigit()):
-            return float(value)*1000*1000
+            return float(value)/1000/1000
         else:
             #Might want to throw an exception here...
             print("NO VALID TYPE")
