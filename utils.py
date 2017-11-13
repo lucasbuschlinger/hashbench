@@ -64,7 +64,7 @@ def usage():
 
 #Watcher for maxumum execution time
 def time_watcher(max_exec_time, com_queue):
-    if(max_exec_time == None):
+    if(max_exec_time is None):
         quit()
     start_time = time.time()
     while True and com_queue.empty():

@@ -64,8 +64,8 @@ def main():
     #Calling the brute force methods with hashtype, minimum and maximum password length
     if args.bruteforce:
         print("\nRunning brute force benchmark on %s.\n" % args.hash)
-        john = john_bruteforce(hash[0], 4, 5, hash_file)
-        hashcat = hashcat_bruteforce(hash[1], 4, 5, hash_file)
+        john = john_bruteforce(hash[0], 4, 5, hash_file, args.time)
+        hashcat = hashcat_bruteforce(hash[1], 4, 5, hash_file, args.time)
         print("John's average speed was %fMH/s." % john)
         print("Hashcat's average speed was %fMH/s." % hashcat)
 
