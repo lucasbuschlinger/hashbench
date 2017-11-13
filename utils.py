@@ -1,3 +1,6 @@
+import time
+import queue
+
 #Helper to map the given hashtype to the required format by john and hashcat respectively
 def arg_changer(hash):
     hashes = []
@@ -58,3 +61,14 @@ def usage():
     file_contents = f.read()
     print(file_contents)
     f.close()
+
+#Watcher for maxumum execution time
+def time_watcher(max_exec_time, com_queue):
+    if(max_exec_time == None):
+        quit()
+    start_time = time.time()
+    while True and com_queue.empty():
+        time_run = time.time() - start_time
+        if(time_run > max_exec_time):
+            quit()
+        time.sleep(1)
