@@ -1,8 +1,10 @@
 import subprocess
 import argparse
 from utils import *
-from bruteforce import *
-from wordlist import *
+#from bruteforce import *
+#from wordlist import *
+from john import *
+from hashcat import *
 
 def main():
 
@@ -33,6 +35,8 @@ def main():
     #Calling the utility which maps the input hash to the input needed for the tools
     hash = arg_changer(args.hash)
 
+    if(args.time is not None):
+        args.time = args.time/2
     #Getting file path or trying to default
     if args.file:
         hash_file = args.file
@@ -67,8 +71,8 @@ def main():
 
     if args.wordlist:
         print("\nBenchmarking in wordlist mode.\n")
-        john = john_wordlist(hash[0], hash_file, "resources/rockyou.wordlist", "KoreLogicRules", args.time/2)# wordlist_file)
-        hashcat = hashcat_wordlist(hash[1], hash_file, "resources/rockyou.wordlist", args.rules, args.time/2)#wordlist_file)
+        john = john_wordlist(hash[0], hash_file, "resources/rockyou.wordlist", None, args.time)# wordlist_file)
+        hashcat = hashcat_wordlist(hash[1], hash_file, "resources/rockyou.wordlist", args.rules, args.time)#wordlist_file)
         print("John's average speed was %fMH/s." % john)
         print("Hashcat's average speed was %fMH/s." % hashcat)
 
