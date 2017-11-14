@@ -19,7 +19,7 @@ def main():
     #Parsing for path to supplied rule file
     parser.add_argument('-rules', '-r', help="Path to rule file(s)")
     #Paring for maximum execution time
-    parser.add_argument('-time', '-t', type=int, help="Maximum execution time in seconds")
+    parser.add_argument('-time', '-t', type=int, help="Maximum execution time in minutes")
     #This is the subparser to parse which mode has been selected (mode selection is required)
     subparsers = parser.add_subparsers(dest='mode', help="The mode to perfome a benchmark on.")
     subparsers.required = True
@@ -36,7 +36,8 @@ def main():
     hash = arg_changer(args.hash)
 
     if(args.time is not None):
-        args.time = args.time/2
+        args.time = args.time*30
+        
     #Getting file path or trying to default
     if args.file:
         hash_file = args.file
