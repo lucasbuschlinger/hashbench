@@ -23,6 +23,7 @@ def arg_changer(hash):
 
     return hashes
 
+
 #Helper to check whether the given string is a float
 def is_float(string):
     try:
@@ -30,6 +31,7 @@ def is_float(string):
         return True
     except ValueError:
         return False
+
 
 #Helper to convert speed to MH/s
 def unit_converter(value):
@@ -46,6 +48,7 @@ def unit_converter(value):
             #Might want to throw an exception here...
             print("NO VALID TYPE")
 
+
 #Helper to supply correct default hashfile to tools, if given
 def get_default_file(hash):
     if(hash == 'md5'):
@@ -55,6 +58,7 @@ def get_default_file(hash):
     else:
         raise Exception('No default file for %s-hashes available! Please supply a file containing hashes!' % hash)
 
+
 #Printing own help
 def usage():
     f = open('doc/usage.txt', 'r')
@@ -62,7 +66,8 @@ def usage():
     print(file_contents)
     f.close()
 
-#Watcher for maxumum execution time
+
+#Watcher for maximum execution time
 def time_watcher(max_exec_time, com_queue):
     if(max_exec_time is None):
         quit()
