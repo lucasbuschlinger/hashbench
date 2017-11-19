@@ -56,7 +56,7 @@ def get_default_file(hash):
     elif(hash == 'sha1'):
         return "resources/hashes/top10k.sh1"
     elif(hash == 'sha-256'):
-        return "resource/hashes/top10k.sha256"
+        return "resources/hashes/top10k.sha256"
     elif(hash == 'sha-512'):
         return "resources/hashes/top10k.sha512"
     else:

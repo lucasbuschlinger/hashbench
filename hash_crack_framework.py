@@ -62,16 +62,16 @@ def main():
         print("\nRunning brute force benchmark on %s.\n" % args.hash)
         john = john_bruteforce(hash[0], min_len, max_len, hash_file, args.time)
         hashcat = hashcat_bruteforce(hash[1], min_len, max_len, hash_file, args.time)
-        print("John's average speed was %fMH/s." % john)
-        print("Hashcat's average speed was %fMH/s." % hashcat)
-
+        print("John's average speed was %fMH/s while cracking %d hashes." % (john[1], john[0]))
+        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1], hashcat[0]))
+        
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
         print("\nBenchmarking in wordlist mode.\n")
         john = john_wordlist(hash[0], hash_file, "resources/rockyou.wordlist", None, args.time)# wordlist_file)
         hashcat = hashcat_wordlist(hash[1], hash_file, "resources/rockyou.wordlist", args.rules, args.time)#wordlist_file)
-        print("John's average speed was %fMH/s." % john)
-        print("Hashcat's average speed was %fMH/s." % hashcat)
+        print("John's average speed was %fMH/s while cracking %d hashes." % (john[1], john[0]))
+        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1], hashcat[0]))
 
 # Executing
 main()
