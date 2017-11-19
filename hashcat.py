@@ -13,19 +13,20 @@ def hashcat_out(process, speeds=[]):
     # Running while process is still running
     while(process.poll() == None):
         # Read as long as there is data in stdout
-        # TODO: could be done nicer?
         while True:
             line = process.stdout.readline()
             if line != '':
                 # Filter for speed
                 if(line.startswith("Speed")):
                     list_of_string = line.split()
-                    # TODO: might not need a loop as we know at which position the desired value is
-                    for i in range(0, len(list_of_string)):
-                        if(is_float(list_of_string[i])):
-                            value = unit_converter(list_of_string[i]+list_of_string[i+1][:-3])
-                            speeds.append(value)
-                            break
+                    speed = unit_converter(list_of_string[1]+list_of_string[2][:-3])
+                    speeds.append(speed)
+                # Filter for number of cracked hashes
+                elif(line.startswith("Recovered.")):
+                    list_of_string = line.split()
+                    list_of_string = list_of_string[1].split('/')
+                    speeds[0] = int(list_of_string[0])
+
             else:
                 break
 
@@ -56,8 +57,8 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
         # Spawn subprocess running an instance of hashcat with rules
         process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-r", rules],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-    # List to store the collected speeds
-    speeds = []
+    # List to store number of cracked hashes and speeds
+    speeds = [0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
     com_queue = queue.Queue(maxsize=1)
@@ -83,8 +84,12 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
         com_queue.put("Exit")
     thread_timeout.join()
 
-    # Return average speed
-    return sum(speeds)/len(speeds)
+    # Putting number of cracked hashes into returning value
+    return_values = [speeds.pop(0)]
+    # Appending average speed to returning value
+    return_values.append(sum(speeds)/len(speeds))
+
+    return return_values
 
 
 # Method to brute force hashes with hashcat
@@ -103,10 +108,10 @@ def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
         no_time = False
 
     # Spawn subprocess running an instance of hashcat
-    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-    # List to store the collected speeds
-    speeds = []
+    # List to store number of cracked hashes and speeds
+    speeds = [0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
     com_queue = queue.Queue(maxsize=1)
@@ -132,5 +137,9 @@ def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
         com_queue.put("Exit")
     thread_timeout.join()
 
-    # Return average speed
-    return sum(speeds)/len(speeds)
+    # Putting number of cracked hashes into returning value
+    return_values = [speeds.pop(0)]
+    # Appending average speed to returning value
+    return_values.append(sum(speeds)/len(speeds))
+
+    return return_values

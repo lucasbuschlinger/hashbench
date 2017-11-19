@@ -12,7 +12,6 @@ def john_out(process, ignore, speeds=[]):
     # Running while process is still running
     count = 0
     while(process.poll() == None):
-        first = True
         # Read as long as there is data in stdout
         while True:
             line = process.stdout.readline()
@@ -66,7 +65,7 @@ def john_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
         #Spawn subprocess running an instance of john with rules
         process = subprocess.Popen(["./john/run/john", "--wordlist={}".format(wordlist), hash_file, "--format={}".format(hash), "--verbosity=1", "--progress-every=1", "--rules:{}".format(rules)], universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    #List to store number of cracked hashes and speeds
+    # List to store number of cracked hashes and speeds
     speeds = [0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
@@ -119,7 +118,7 @@ def john_bruteforce(hash, min, max, hash_file, max_exec_time):
     #Spawn subprocess running an instance of john
     process = subprocess.Popen(["./john/run/john", "--mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "-min-len={}".format(min), "-max-len={}".format(max), hash_file, "--format={}".format(hash), "--verbosity=1", "--progress-every=1"], universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    #List to store number of cracked hashes and speeds
+    # List to store number of cracked hashes and speeds
     speeds = [0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
