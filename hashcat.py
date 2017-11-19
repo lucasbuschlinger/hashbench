@@ -103,7 +103,7 @@ def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
         no_time = False
 
     # Spawn subprocess running an instance of hashcat
-    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store the collected speeds
     speeds = []

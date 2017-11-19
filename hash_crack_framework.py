@@ -1,9 +1,14 @@
 import argparse
+import subprocess
 from utils import *
 from john import *
 from hashcat import *
 
 def main():
+
+    #Removing potfiles to have maximum work to do
+    subprocess.run(['rm', 'john/run/john.pot'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', 'hashcat/hashcat.potfile'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     # Initialising parser for CLI parsing
     parser = argparse.ArgumentParser(description="Benchmarking hashcat vs JohnTheRipper")#, usage=usage(), add_help=False)#might wanna write own help
@@ -18,17 +23,10 @@ def main():
     parser.add_argument('-rules', '-r', help="Path to rule file(s)")
     # Parsing for maximum execution time
     parser.add_argument('-time', '-t', type=int, help="Maximum execution time in minutes")
-
-#    ##SUBPARSER?
-#    # This is the subparser to parse which mode has been selected (mode selection is required)
-#    subparsers = parser.add_subparsers(dest='mode', help="The mode to perfome a benchmark on.")
-#    subparsers.required = True
-#    parser_mode = subparsers.add_parser('mode')
-#    # Mutual exclusion so that only one mode gets benchmarked at a time
-#    mode_group = parser_mode.add_mutually_exclusive_group(required=True)
-#    mode_group.add_argument('-bruteforce', '-bf', action="store_true", help="Selecting a brute force #attack.")
-#    mode_group.add_argument('-wordlist', '-wl', action="store_true", help="Selecting a wordlist attack.")
-
+    # Parsing for minimal password length
+    parser.add_argument('-min_len', type=int, help="Minimal password length")
+    # Parsing for maximum password length
+    parser.add_argument('-max_len', type=int, help="Maximum password length")
 
     args = parser.parse_args()
 
@@ -50,11 +48,20 @@ def main():
             print(e)
             quit()
 
+
+    min_len = 4
+    max_len = 16
+
+    if(args.min_len):
+        min_len = args.min_len
+    if(args.max_len):
+        max_len = args.max_len
+
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
         print("\nRunning brute force benchmark on %s.\n" % args.hash)
-        john = john_bruteforce(hash[0], 3, 10, hash_file, args.time)
-        hashcat = hashcat_bruteforce(hash[1], 3, 10, hash_file, args.time)
+        john = john_bruteforce(hash[0], min_len, max_len, hash_file, args.time)
+        hashcat = hashcat_bruteforce(hash[1], min_len, max_len, hash_file, args.time)
         print("John's average speed was %fMH/s." % john)
         print("Hashcat's average speed was %fMH/s." % hashcat)
 

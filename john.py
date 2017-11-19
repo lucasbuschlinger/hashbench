@@ -111,7 +111,7 @@ def john_bruteforce(hash, min, max, hash_file, max_exec_time):
 
     #List to store the collected speeds
     speeds = []
-
+    
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
     com_queue = queue.Queue(maxsize=1)
 

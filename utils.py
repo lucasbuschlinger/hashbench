@@ -52,9 +52,13 @@ def unit_converter(value):
 #Helper to supply correct default hashfile to tools, if given
 def get_default_file(hash):
     if(hash == 'md5'):
-        return "resources/md5.hash"
-    elif(hash == 'md4'):
-        return "resources/md4.hash"
+        return "resources/hashes/top10k.md5"
+    elif(hash == 'sha1'):
+        return "resources/hashes/top10k.sh1"
+    elif(hash == 'sha-256'):
+        return "resource/hashes/top10k.sha256"
+    elif(hash == 'sha-512'):
+        return "resources/hashes/top10k.sha512"
     else:
         raise Exception('No default file for %s-hashes available! Please supply a file containing hashes!' % hash)
 
