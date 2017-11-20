@@ -67,7 +67,7 @@ def main():
         john = john_bruteforce(hash[0], min_len, max_len, hash_file, args.time)
         hashcat = hashcat_bruteforce(hash[1], min_len, max_len, hash_file, args.time)
         print("John's average speed was %fMH/s while cracking %d hashes." % (john[1], john[0]))
-        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1], hashcat[0]))
+        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1]/1000000, hashcat[0]))
 
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
@@ -75,7 +75,7 @@ def main():
         john = john_wordlist(hash[0], hash_file, args.wordlistfile, rules[0], args.time)# wordlist_file)
         hashcat = hashcat_wordlist(hash[1], hash_file, args.wordlistfile, rules[1], args.time)#wordlist_file)
         print("John's average speed was %fMH/s while cracking %d hashes." % (john[1], john[0]))
-        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1], hashcat[0]))
+        print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1]/1000000, hashcat[0]))
 
 # Executing
 main()

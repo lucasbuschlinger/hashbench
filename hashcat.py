@@ -2,7 +2,7 @@ import subprocess
 from utils import *
 
 # Function to capture and filter hashcats output
-# TODO: filter correctly if multiple Devices are used
+# See https://hashcat.net/wiki/doku.php?id=machine_readable to understand
 # Required inputs:
 #   process:    the process to read from            process
 #   speeds:     the list to store the output in     list (mutable)
@@ -13,16 +13,20 @@ def hashcat_out(process, speeds=[]):
         while True:
             line = process.stdout.readline()
             if line != '':
-                # Filter for speed
-                if(line.startswith("Speed")):
-                    list_of_string = line.split()
-                    speed = unit_converter(list_of_string[1]+list_of_string[2][:-3])
+                list_of_string = line.split()
+                if(list_of_string[0] == 'STATUS'):
+                    speed = 0
+                    # First speed is always at fourth position
+                    index = 3
+                    while True:
+                        speed += int(list_of_string[index])
+                        index += 2
+                        # Next speed would be 2 positions further, if its NaN ('EXEC_RUNTIME') we're done
+                        if(not is_float(list_of_string[index])):
+                            break
                     speeds.append(speed)
-                # Filter for number of cracked hashes
-                elif(line.startswith("Recovered.")):
-                    list_of_string = line.split()
-                    list_of_string = list_of_string[1].split('/')
-                    speeds[0] = int(list_of_string[0])
+                        # Number of recovered hashes is 8 positions further from 'EXEC_RUNTIME'
+                    speeds[0] = int(list_of_string[index+8])
 
             else:
                 break
@@ -49,10 +53,10 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
 
     if rules is None:
         # Spawn subprocess running an instance of hashcat without rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null", "--machine-readable", "--quiet"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     else:
         # Spawn subprocess running an instance of hashcat with rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-r", rules,"-w", "3", "-O",rules, "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-r", rules,"-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null", "--machine-readable", "--quiet"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0]
@@ -84,7 +88,7 @@ def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
         no_time = False
 
     # Spawn subprocess running an instance of hashcat
-    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "--machine-readable", "--quiet", "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0]
