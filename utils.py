@@ -1,7 +1,7 @@
 import time
 import queue
 
-#Helper to map the given hashtype to the required format by john and hashcat respectively
+# Helper to map the given hashtype to the required format by john and hashcat respectively
 def arg_changer(hash):
     hashes = []
 
@@ -24,7 +24,7 @@ def arg_changer(hash):
     return hashes
 
 
-#Helper to check whether the given string is a float
+# Helper to check whether the given string is a float
 def is_float(string):
     try:
         float(string)
@@ -33,7 +33,7 @@ def is_float(string):
         return False
 
 
-#Helper to convert speed to MH/s
+# Helper to convert speed to MH/s
 def unit_converter(value):
     if(value.endswith("M")):
         return float(value[:-1])
@@ -49,7 +49,7 @@ def unit_converter(value):
             print("NO VALID TYPE")
 
 
-#Helper to supply correct default hashfile to tools, if given
+# Helper to supply correct default hashfile to tools, if given
 def get_default_file(hash):
     if(hash == 'md5'):
         return "resources/hashes/top10k.md5"
@@ -63,7 +63,7 @@ def get_default_file(hash):
         raise Exception('No default file for %s-hashes available! Please supply a file containing hashes!' % hash)
 
 
-#Printing own help
+# Printing own help
 def usage():
     f = open('doc/usage.txt', 'r')
     file_contents = f.read()
@@ -71,7 +71,7 @@ def usage():
     f.close()
 
 
-#Watcher for maximum execution time
+# Watcher for maximum execution time
 def time_watcher(max_exec_time, com_queue):
     if(max_exec_time is None):
         quit()
@@ -81,3 +81,17 @@ def time_watcher(max_exec_time, com_queue):
         if(time_run > max_exec_time):
             quit()
         time.sleep(1)
+
+# Helper to put specified rules into desired order
+def rule_orderer(rules):
+    ordered_rules = []
+    if(rules is None):
+        ordered_rules.append(None)
+        ordered_rules.append(None)
+        return ordered_rules
+    elif(rules[0].endswith('.rule')):
+        ordered_rules.append(rules[1])
+        ordered_rules.append(rules[0])
+        return ordered_rules
+    else:
+        return rules

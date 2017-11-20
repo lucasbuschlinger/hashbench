@@ -19,19 +19,24 @@ def main():
     # Parsing for path to supplied hash file, defaults
     parser.add_argument('mode', type=str, choices=['bruteforce', 'bf', 'wordlist', 'wl'], help="The mode to perform the benchmark on.")
     parser.add_argument('-file', '-f', help="Path to a file containing hash(es)")
-    # Parsing for path to supplied rule file
-    parser.add_argument('-rules', '-r', help="Path to rule file(s)")
+    # Parsing for path to supplied rule file, TODO:currently only supports one for each tool
+    parser.add_argument('-rules', '-r', nargs=2, help="Path to rulefile to be used by hashcat as well as name of rules to be used by John")
     # Parsing for maximum execution time
     parser.add_argument('-time', '-t', type=int, help="Maximum execution time in minutes")
     # Parsing for minimal password length
     parser.add_argument('-min_len', type=int, help="Minimal password length")
     # Parsing for maximum password length
     parser.add_argument('-max_len', type=int, help="Maximum password length")
+    # Parsing for supplied wordlist file
+    parser.add_argument('-wordlistfile', '-wlf', help="Path to wordlist file")
 
     args = parser.parse_args()
 
     # Calling the utility which maps the input hash to the input needed for the tools
     hash = arg_changer(args.hash)
+
+    # Calling the utlility to bring the specified rules into order (john, hashcat)
+    rules = rule_orderer(args.rules)
 
     # If a maximum execution time was specified in the CLI we convert it from the input minutes to seconds,
     # we do so by mulitplying by 30 as each tool only runs for half of the specified time.
@@ -48,10 +53,9 @@ def main():
             print(e)
             quit()
 
-
+    # Defualt password lengths to check, setting values to the specified ones if supplied
     min_len = 4
     max_len = 16
-
     if(args.min_len):
         min_len = args.min_len
     if(args.max_len):
@@ -68,8 +72,8 @@ def main():
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
         print("\nBenchmarking in wordlist mode.\n")
-        john = john_wordlist(hash[0], hash_file, "resources/rockyou.wordlist", None, args.time)# wordlist_file)
-        hashcat = hashcat_wordlist(hash[1], hash_file, "resources/rockyou.wordlist", args.rules, args.time)#wordlist_file)
+        john = john_wordlist(hash[0], hash_file, args.wordlistfile, rules[0], args.time)# wordlist_file)
+        hashcat = hashcat_wordlist(hash[1], hash_file, args.wordlistfile, rules[1], args.time)#wordlist_file)
         print("John's average speed was %fMH/s while cracking %d hashes." % (john[1], john[0]))
         print("Hashcat's average speed was %fMH/s while cracking %d hashes." % (hashcat[1], hashcat[0]))
 

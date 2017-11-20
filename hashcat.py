@@ -47,12 +47,12 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
         no_time = False
 
 
-    if rules == None:
+    if rules is None:
         # Spawn subprocess running an instance of hashcat without rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-w", "3", "-O""--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     else:
         # Spawn subprocess running an instance of hashcat with rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-r", "-w", "3", "-O",rules, "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash), hash_file, wordlist, "--status", "--status-timer", "1", "-r", rules,"-w", "3", "-O",rules, "--runtime={}".format(max_exec_time), "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0]

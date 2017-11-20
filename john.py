@@ -57,8 +57,7 @@ def john_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
     else:
         no_time = False
 
-
-    if rules == None:
+    if rules is None:
         #Spawn subprocess running an instance of john without rules
         process = subprocess.Popen(["./john/run/john", "--wordlist={}".format(wordlist), hash_file, "--format={}".format(hash), "--verbosity=1", "--progress-every=1"], universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     else:
