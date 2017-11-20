@@ -21,9 +21,19 @@ mode        |   bruteforce  | specifies the attack the benchmark gets performed 
 
 Optional arguments:
 
-argument    |  type   |   description
+argument            |  type   |   description
 -------------------------------------
--h/--help   |   bool  |   show this help message and exit
--f/-file    |   str   |   path to a file containing hash(es)
--r/-rules   |   str   |   path to rule file
--t/-time    |   int   |   maximum execution time in seconds
+-h/--help           |   bool  |   show help message and exit
+-f/-file            |   str   |   path to a file containing hash(es)
+-r/-rules           |   str   |   path to rule file for hashcat and rule name for John, needs 2 arguments
+-t/-time            |   int   |   maximum execution time in seconds
+-wlf/-wordlistfile  |   str   |   path to wordlist file
+-minlen            |   int   |   minimum length of password candidates
+-maxlen            |   int   |   maximum length of password candidates
+
+Examples:
+To benchmark using the brute force attack:
+  python3 hash_crack_framework.py md5 bf -f resources/hashes/top10k.md5 -t 30
+
+To benchmark using a wordlist attack:
+  python3 hash_crack_framework.py md5 wl -f resources/hashes/top10k.md5 -wlf resources/rockyou.wordlist -r resources/rules/hashcat/all.rule KoreLogic -t 30

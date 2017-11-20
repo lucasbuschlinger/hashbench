@@ -8,6 +8,8 @@ from utils import *
 # Required inputs:
 #   process:    the process to read from:           process
 #   speeds:     the list to store the output in     list (mutable)
+# Returns:
+#   mutated list 'speeds' contaning (number of cracked hashes, (speed)*)
 def john_out(process, ignore, speeds=[]):
     # Running while process is still running
     count = 0
@@ -49,6 +51,8 @@ def john_out(process, ignore, speeds=[]):
 #   wordlist: file containing the wordlist      string(path)
 #   rules: the rules to be applied              string(path)
 #   max_exec_time: the maximum time to execute  integer
+# Returns:
+#   list contaning (number of cracked hashes, average speed)
 def john_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
 
     # Setting a flag whether a maximum execution time was specified
@@ -106,6 +110,8 @@ def john_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
 #   max: maximum password length to be tested   integer
 #   hash_file: file containing the hash/hashes  string(path)
 #   max_exec_time: maximum time to execute      integer
+# Returns:
+#   list contaning (number of cracked hashes, average speed)
 def john_bruteforce(hash, min, max, hash_file, max_exec_time):
 
     # Setting a flag whether a maximum execution time was specified

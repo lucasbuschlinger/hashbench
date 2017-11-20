@@ -6,6 +6,8 @@ from utils import *
 # Required inputs:
 #   process:    the process to read from            process
 #   speeds:     the list to store the output in     list (mutable)
+# Returns:
+#   mutated list 'speeds' (number of cracked hashes, (speed)*)
 def hashcat_out(process, speeds=[]):
     # Running while process is still running
     while(process.poll() == None):
@@ -14,6 +16,7 @@ def hashcat_out(process, speeds=[]):
             line = process.stdout.readline()
             if line != '':
                 list_of_string = line.split()
+                # Ommitting non status lines
                 if(list_of_string[0] == 'STATUS'):
                     speed = 0
                     # First speed is always at fourth position
@@ -42,6 +45,8 @@ def hashcat_out(process, speeds=[]):
 #   wordlist:       file containing the wordlist        string(path)
 #   rules:          the rules to be applied             string(path)
 #   max_exec_time:  the maximum time to execute         integer
+# Returns:
+#   list contaning (number of cracked hashes, average speed)
 def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
 
     # Setting a flag whether a maximum execution time was specified
@@ -50,6 +55,9 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
     else:
         no_time = False
 
+    # If no maximum execution time is specified we set it to 24h (just a high value)
+    if(max_exec_time is None):
+        max_exec_time = 1440
 
     if rules is None:
         # Spawn subprocess running an instance of hashcat without rules
@@ -79,6 +87,8 @@ def hashcat_wordlist(hash, hash_file, wordlist, rules, max_exec_time):
 #   max:            maximum password length to be tested     integer
 #   hash_file:      file containing the hash/hashes          string(path)
 #   max_exec_time:  the maximum time to execute              integer
+# Returns:
+#   list contaning (number of cracked hashes, average speed)
 def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
 
     # Setting a flag whether a maximum execution time was specified
@@ -87,6 +97,10 @@ def hashcat_bruteforce(hash, min, max, hash_file, max_exec_time):
     else:
         no_time = False
 
+    # If no maximum execution time is specified we set it to 24h (just a high value)
+    if(max_exec_time is None):
+        max_exec_time = 1440
+    
     # Spawn subprocess running an instance of hashcat
     process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash), "-a3", "--increment", "--increment-min", "{}".format(min), "--increment-max", "{}".format(max), hash_file ,"?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w", "3", "-O", "--runtime={}".format(max_exec_time), "--machine-readable", "--quiet", "-o", "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 

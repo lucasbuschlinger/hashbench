@@ -82,7 +82,7 @@ def time_watcher(max_exec_time, com_queue):
             quit()
         time.sleep(1)
 
-# Helper to put specified rules into desired order
+# Helper to put specified rules into desired order (john, hashcat)
 def rule_orderer(rules):
     ordered_rules = []
     if(rules is None):
