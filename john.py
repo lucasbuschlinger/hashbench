@@ -11,6 +11,7 @@ from utils import *
 #   speeds:     the list to store the output in     list (mutable)
 # Returns:
 #   mutated list 'speeds' containing (number of cracked hashes, (speed)*)
+# noinspection PyDefaultArgument
 def john_out(process, ignore, speeds=[]):
     # Running while process is still running
     count = 0
@@ -20,6 +21,10 @@ def john_out(process, ignore, speeds=[]):
             line = process.stdout.readline()
             # Skipping the first 3 or 4 lines as they are not relevant
             if count < ignore:
+                # Getting how many hashes there are detected in the input file
+                if count == 1:
+                    speeds[1] = int(line.split()[1])
+
                 count += 1
                 break
 
@@ -76,7 +81,7 @@ def john_wordlist(hash_type, hash_file, wordlist, rules, max_exec_time):
                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     # List to store number of cracked hashes and speeds
-    speeds = [0]
+    speeds = [0, 0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
     com_queue = queue.Queue(maxsize=1)
@@ -102,8 +107,8 @@ def john_wordlist(hash_type, hash_file, wordlist, rules, max_exec_time):
         com_queue.put("Exit")
     thread_timeout.join()
 
-    # Returning a tuple containing (#cracked hashes, average speed)
-    return speeds.pop(0), sum(speeds) / len(speeds)
+    # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
+    return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
 
 
 # Method to brute force hashes with john
@@ -131,7 +136,7 @@ def john_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_time)
                                stderr=subprocess.STDOUT)
 
     # List to store number of cracked hashes and speeds
-    speeds = [0]
+    speeds = [0, 0]
 
     # Queue to communicate with the timeout thread, enables us to end it, if the process ends prior to timeout
     com_queue = queue.Queue(maxsize=1)
@@ -157,5 +162,5 @@ def john_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_time)
         com_queue.put("Exit")
     thread_timeout.join()
 
-    # Returning a tuple containing (#cracked hashes, average speed)
-    return speeds.pop(0), sum(speeds) / len(speeds)
+    # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
+    return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)

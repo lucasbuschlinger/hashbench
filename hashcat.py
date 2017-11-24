@@ -9,7 +9,10 @@ from utils import *
 #   speeds:     the list to store the output in     list (mutable)
 # Returns:
 #   mutated list 'speeds' (number of cracked hashes, (speed)*)
+# noinspection PyDefaultArgument
 def hashcat_out(process, speeds=[]):
+    # Flag for writing total number of detected hashes
+    written = False
     # Running while process is still running
     while process.poll() is None:
         # Read as long as there is data in stdout
@@ -31,6 +34,9 @@ def hashcat_out(process, speeds=[]):
                     speeds.append(speed)
                     # Number of recovered hashes is 8 positions further from 'EXEC_RUNTIME'
                     speeds[0] = int(list_of_string[index+8])
+                    # Writing number of detected hashes, if not already done
+                    if not written:
+                        speeds[1] = int(list_of_string[index+9])
 
             else:
                 break
@@ -68,13 +74,13 @@ def hashcat_wordlist(hash_type, hash_file, wordlist, rules, max_exec_time):
                                     "--quiet"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
-    speeds = [0]
+    speeds = [0, 0]
 
     # Calling the output collector
     hashcat_out(process, speeds)
 
-    # Returning a tuple containing (#cracked hashes, average speed)
-    return speeds.pop(0), sum(speeds) / len(speeds)
+    # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
+    return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
 
 
 # Method to brute force hashes with hashcat
@@ -100,10 +106,10 @@ def hashcat_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_ti
                                 "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
-    speeds = [0]
+    speeds = [0, 0]
 
     # Calling the output collector
     hashcat_out(process, speeds)
 
-    # Returning a tuple containing (#cracked hashes, average speed)
-    return speeds.pop(0), sum(speeds) / len(speeds)
+    # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
+    return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
