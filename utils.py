@@ -3,6 +3,7 @@ import queue
 
 
 # Helper to map the given hash type to the required format by john and hashcat respectively
+# noinspection SpellCheckingInspection
 def arg_changer(hash_type):
     hashes = []
 
@@ -50,7 +51,7 @@ def unit_converter(value):
             print("NO VALID TYPE")
 
 
-# Helper to supply correct default hashfile to tools, if given
+# Helper to supply correct default hash file to tools, if given
 def get_default_file(hash_type):
     if hash_type == 'md5':
         return "resources/hashes/top10k.md5"
@@ -78,7 +79,6 @@ def time_watcher(max_exec_time, com_queue):
         quit()
     start_time = time.time()
     while True and com_queue.empty():
-        print("Still watching the time here!")
         time_run = time.time() - start_time
         if time_run > max_exec_time:
             quit()

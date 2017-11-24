@@ -1,6 +1,3 @@
-from decimal import *
-
-
 def main():
 
     with open("time_spent.txt") as f:
@@ -9,11 +6,11 @@ def main():
     for line in lines:
         words = line.split()
         time_min += int((words[-1])[:-3])
-    time_hrs = Decimal(time_min/60).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
+    time_hrs = time_min/60
 
     print("Total time spent:")
-    print(str(time_min) + " minutes")
-    print(str(time_hrs) + " hours")
+    print("  %d minutes" % time_min)
+    print("  %.2f hours" % time_hrs)
 
 
 main()
