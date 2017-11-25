@@ -18,7 +18,7 @@ def main():
 
     # Adding arguments to the parser
     # ###NOT DONE, ONLY FIRST TRY###
-    parser.add_argument('hash', action='store', choices=['md5', 'sha1', 'sha-256', 'sha-512'],
+    parser.add_argument('hash', action='store', choices=['md5', 'sha1', 'sha-256', 'sha-512', 'md5crypt'],
                         help="The hash type to perform a benchmark on.")
     # Parsing for path to supplied hash file, defaults
     parser.add_argument('mode', type=str, choices=['bruteforce', 'bf', 'wordlist', 'wl'],

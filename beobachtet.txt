@@ -1,0 +1,17 @@
+running hash_crack_framework.py md5 wl -wlf resources/rockyou.wordlist -r resources/rules/hashcat_full.rule KoreLogic -t 5:
+    john: wordlist with rules: candidate passwords@cpu => slow (100% CPU (1 Core), 6% GPU) ~ 16-17 MH/s
+    hashcat: wordlist with rules: everything on GPU (100% GPU usage) ~ 2.1 - 2.2 GH/s
+
+    => hashcat about 126x faster
+
+running python3 hash_crack_framework.py md5 bf -t 5:
+    john: cpu(single core) & gpu @100% ~ 4.8 GH/s
+    hashcat: cpu low (~2-3%), gpu @100% ~ 6.3-6.4 GH/s
+
+    => hashcat about 1.3x faster
+
+running hash_crack_framework.py md5crypt wl -wlf resources/rockyou.wordlist -r resources/rules/hashcat_full.rule KoreLogic -t 5:
+    john: cpu@100%, gpu@85% ~ 2.3 MH/s
+    hashcat: cpu@40%, gpu@100% ~ 3.76 MH/s
+
+    => hashcat about 1.64x faster

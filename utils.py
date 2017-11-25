@@ -22,6 +22,9 @@ def arg_changer(hash_type):
     elif hash_type == 'sha-512':
         hashes.append("raw-sha512-opencl")
         hashes.append(1700)
+    elif hash_type == 'md5crypt':
+        hashes.append('md5crypt-opencl')
+        hashes.append(500)
 
     return hashes
 
@@ -61,6 +64,8 @@ def get_default_file(hash_type):
         return "resources/hashes/top10k.sha256"
     elif hash_type == 'sha-512':
         return "resources/hashes/top10k.sha512"
+    elif hash_type == 'md5crypt':
+        return "resources/hashes/top10k.md5crypt"
     else:
         raise Exception('No default file for %s-hashes available! Please supply a file containing hashes!' % hash)
 
