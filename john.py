@@ -87,7 +87,7 @@ def john_wordlist(hash_type, hash_file, wordlist, rules, max_exec_time):
     com_queue = queue.Queue(maxsize=1)
 
     # This thread captures the output from john
-    thread_output = threading.Thread(target=john_out, args=(process, 3, speeds))
+    thread_output = threading.Thread(target=john_out, args=(process, 4, speeds))
     thread_output.start()
     # This thread keeps a look on the time(out)
     thread_timeout = threading.Thread(target=time_watcher, args=(max_exec_time, com_queue))
@@ -127,13 +127,13 @@ def john_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_time)
         no_time = True
     else:
         no_time = False
-
     # Spawn subprocess running an instance of john
     process = subprocess.Popen(["./john/run/john", "--mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a",
                                 "-min-len={}".format(min_length), "-max-len={}".format(max_length), hash_file,
                                 "--format={}".format(hash_type), "--verbosity=1", "--progress-every=1"],
                                universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
+    time_start = time.time()
 
     # List to store number of cracked hashes and speeds
     speeds = [0, 0]
@@ -155,6 +155,7 @@ def john_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_time)
     # Terminating hashcat if timeout is reached
     if thread_output.is_alive():
         process.terminate()
+    print(time.time()-time_start)
     thread_output.join()
 
     # Terminating timeout thread if hashcat is done earlier

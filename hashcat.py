@@ -1,4 +1,6 @@
 import subprocess
+import threading
+import queue
 from utils import *
 
 
@@ -96,20 +98,45 @@ def hashcat_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_ti
 
     # If no maximum execution time is specified we set it to 24h (just a high value)
     if max_exec_time is None:
-        max_exec_time = 1440
-    
+        no_time = True
+    else:
+        no_time = False
+    print(max_exec_time)
+    time_start = time.time()
     # Spawn subprocess running an instance of hashcat
     process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash_type), "-a3", "--increment",
                                 "--increment-min", "{}".format(min_length), "--increment-max", "{}".format(max_length),
                                 hash_file, "?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w",
-                                "3", "-O", "--runtime={}".format(max_exec_time), "--machine-readable", "--quiet", "-o",
+                                "3", "-O", "--machine-readable", "--quiet", "-o",
                                 "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0, 0]
 
-    # Calling the output collector
-    hashcat_out(process, speeds)
+    com_queue = queue.Queue(maxsize=1)
+
+    # This thread captures the output from hashcat
+    thread_output = threading.Thread(target=hashcat_out, args=(process, speeds))
+    thread_output.start()
+    # This thread keeps a look on the time(out)
+    thread_timeout = threading.Thread(target=time_watcher, args=(max_exec_time, com_queue))
+    thread_timeout.start()
+
+    # While both treads are running OR, if no maximum execution time was specified,
+    #  while hashcat is running we do absolutely nothing (wasting cycles... IS THERE A BETTER WAY?)
+    while threading.active_count() == 3 or (no_time and (threading.active_count() == 2)):
+        time.sleep(1)
+
+    # Terminating hashcat if timeout is reached
+    if thread_output.is_alive():
+        process.terminate()
+    thread_output.join()
+    print(time.time() - time_start)
+
+    # Terminating timeout thread if hashcat is done earlier
+    if thread_timeout.is_alive():
+        com_queue.put("Exit")
+    thread_timeout.join()
 
     # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
     return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
