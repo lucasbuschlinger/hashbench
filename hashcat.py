@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import queue
+import shlex
 from utils import *
 
 
@@ -58,22 +59,14 @@ def hashcat_out(process, speeds=[]):
 #   list containing (number of cracked hashes, average speed)
 def hashcat_wordlist(hash_type, hash_file, wordlist, rules, max_exec_time):
 
-    # If no maximum execution time is specified we set it to 24h (just a high value)
-    if max_exec_time is None:
-        max_exec_time = 1440
+    process_args = "./hashcat/hashcat -a0 -m{} {} {} --status --status-timer 1 -w 3 -O -o /dev/null" \
+                   " --machine-readable --quiet".format(hash_type, hash_file, wordlist)
+    if rules is not None:
+        process_args += " -r {}".format(rules)
+    if max_exec_time is not None:
+        process_args += " --runtime={}".format(max_exec_time)
 
-    if rules is None:
-        # Spawn subprocess running an instance of hashcat without rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash_type), hash_file, wordlist,
-                                    "--status", "--status-timer", "1", "-w", "3", "-O",
-                                    "--runtime={}".format(max_exec_time), "-o", "/dev/null", "--machine-readable",
-                                    "--quiet"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    else:
-        # Spawn subprocess running an instance of hashcat with rules
-        process = subprocess.Popen(["./hashcat/hashcat", "-a0", "-m", "{}".format(hash_type), hash_file, wordlist,
-                                    "--status", "--status-timer", "1", "-r", rules, "-w", "3", "-O",
-                                    "--runtime={}".format(max_exec_time), "-o", "/dev/null", "--machine-readable",
-                                    "--quiet"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0, 0]
@@ -101,14 +94,13 @@ def hashcat_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_ti
         no_time = True
     else:
         no_time = False
-    print(max_exec_time)
-    time_start = time.time()
+
     # Spawn subprocess running an instance of hashcat
     process = subprocess.Popen(["./hashcat/hashcat", "-m", "{}".format(hash_type), "-a3", "--increment",
                                 "--increment-min", "{}".format(min_length), "--increment-max", "{}".format(max_length),
                                 hash_file, "?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a", "--status", "--status-timer", "1", "-w",
                                 "3", "-O", "--machine-readable", "--quiet", "-o",
-                                "/dev/null"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                                "/dev/null", "--markov-disable"],  universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # List to store number of cracked hashes and speeds
     speeds = [0, 0]
@@ -131,7 +123,6 @@ def hashcat_bruteforce(hash_type, min_length, max_length, hash_file, max_exec_ti
     if thread_output.is_alive():
         process.terminate()
     thread_output.join()
-    print(time.time() - time_start)
 
     # Terminating timeout thread if hashcat is done earlier
     if thread_timeout.is_alive():
