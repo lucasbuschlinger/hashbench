@@ -15,3 +15,12 @@ running hash_crack_framework.py md5crypt wl -wlf resources/rockyou.wordlist -r r
     hashcat: cpu@40%, gpu@100% ~ 3.76 MH/s
 
     => hashcat about 1.64x faster
+
+
+Running hashcat in bruteforce and with markov chains disabled and enabled:
+    Enabled (default):
+        - 5672.75 MH/s
+        - 4805/9999 hashes cracked
+    Disabled:
+        - 5893 MH/s
+        - 2157/9999 hashes cracked!

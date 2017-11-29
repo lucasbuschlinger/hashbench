@@ -21,7 +21,7 @@ def main():
     parser.add_argument('hash', action='store', choices=['md5', 'sha1', 'sha-256', 'sha-512', 'md5crypt'],
                         help="The hash type to perform a benchmark on.")
     # Parsing for path to supplied hash file, defaults
-    parser.add_argument('mode', type=str, choices=['bruteforce', 'bf', 'wordlist', 'wl'],
+    parser.add_argument('mode', type=str, choices=['bruteforce', 'bf', 'wordlist', 'wl', 'markov'],
                         help="The mode to perform the benchmark on.")
     parser.add_argument('-file', '-f', help="Path to a file containing hash(es)")
     # Parsing for path to supplied rule file, TODO:currently only supports one for each tool
@@ -122,6 +122,17 @@ def main():
         print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
               % ((hashcat[1]-hashcat[0])/(int(hashcat[0]/hashcat_end))))
 
-
+    if args.mode == 'markov':
+        print("Running johns markov mode.")
+        john_start = time.time()
+        john = john_markov(hashes[0], hash_file, args.time)
+        john_end = time.time() - john_start
+        print("Results for John:")
+        print("  Average Speed: %.4f MH/s" % john[2])
+        print("  Cracked hashes: %d/%d" % (john[0], john[1]))
+        print("  Time run: %.4fs" % john_end)
+        print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
+        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
+            % ((john[1] - john[0]) / (int(john[0] / john_end))))
 # Executing
 main()
