@@ -24,3 +24,37 @@ Running hashcat in bruteforce and with markov chains disabled and enabled:
     Disabled:
         - 5893 MH/s
         - 2157/9999 hashes cracked!
+
+Running brute force hashcat vs john with hashcat having --markov-disable:
+    Results for John:
+        Average Speed: 4921.2432 MH/s
+        Cracked hashes: 4888/9999
+        Time run: 150.6603s
+        Theoretical number of cracked hashes per second: 32
+        Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 159.72s
+
+
+    Results for hashcat:
+        Average Speed: 6261.1481 MH/s
+        Cracked hashes: 4887/9999
+        Time run: 151.2537s
+        Theoretical number of cracked hashes per second: 32
+        Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 159.75s
+
+Wordlist with OneRule:
+Benchmarking in wordlist mode.
+
+Results for John:
+  Average Speed: 25.1973 MH/s
+  Cracked hashes: 9818/9999
+  Time run: 302.0171s
+  Theoretical number of cracked hashes per second: 32
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 5.66s
+
+
+Results for hashcat:
+  Average Speed: 2853.1712 MH/s
+  Cracked hashes: 9928/9999
+  Time run: 263.2819s
+  Theoretical number of cracked hashes per second: 37
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 1.92s

@@ -62,7 +62,7 @@ def main():
 
     # Default password lengths to check, setting values to the specified ones, if supplied
     minlen = 4
-    maxlen = 16
+    maxlen = 12
     if args.minlen:
         minlen = args.minlen
     if args.maxlen:
