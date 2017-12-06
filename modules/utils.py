@@ -112,13 +112,38 @@ def print_results(tool, results, time_run, time_spec):
     time_remaining = ((results[1] - results[0]) / (int(results[0] / time_run)))
 
     print("Results for %s:" % tool)
-    print("  Average Speed: %.4f MH/s" % results[2])
+    print("  Average Speed: %.3f MH/s" % results[2])
     print("  Cracked hashes: %d/%d" % (results[0], results[1]))
-    print("  Time run: %.4fs" % time_run)
+    print("  Time run: %.3fs" % time_run)
     print("  Theoretical number of cracked hashes per second: %d" % hashes_per_sec)
-    if time_run < time_spec:
-        print("  %s finished early! => Keyspace exhausted!" % tool)
+
+    if results[0] == results[1]:
+        print("  %s finished early, managed to crack all %d hashes!" % (tool, results[1]))
+    elif time_spec is not None:
+        if time_run < time_spec:
+            print("  %s finished early! => Keyspace exhausted!" % tool)
+        else:
+            print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect):"
+                  " %.3fs"
+                  % time_remaining)
+
+
+# Helper to compare the tools
+def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
+
+    print_results("John", john_results, john_time, time_spec)
+
+    print("\n")
+
+    print_results("Hashcat", hashcat_results, hashcat_time, time_spec)
+
+    speed_comparison = hashcat_results[2]/john_results[2]
+    cracked_comparison = hashcat_results[0]/john_results[0]
+
+    print("\nIn comparison:")
+    if speed_comparison >= 1:
+        print("  Speed-wise hashcat was %.3fx faster as john" % speed_comparison)
     else:
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect):"
-              " %.2fs"
-              % time_remaining)
+        print("  Speed-wise hashcat was only %.3fx as fast as john" % speed_comparison)
+
+    print("  Hashcat cracked %.3fx as many hashes as john" % cracked_comparison)

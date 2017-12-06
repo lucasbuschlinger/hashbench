@@ -62,9 +62,13 @@ class John:
         process_args = "./john/run/john --wordlist={} {} --format={} --verbosity=1 --progress-every=1".format(
             wordlist, hash_file, hash_type)
 
+        # Number of lines to skip in output
+        skip = 3
+
         # Adding rules to arguments, if specified
         if rules is not None:
             process_args += " --rules:{}".format(rules)
+            skip = 4
 
         # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
@@ -78,7 +82,7 @@ class John:
         speeds = [0, 0]
 
         # Calling the output collector
-        self.__out(process, 4, speeds)
+        self.__out(process, skip, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
         return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)

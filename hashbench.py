@@ -16,7 +16,6 @@ def main():
     # usage=usage(), add_help=False)#might wanna write own help
 
     # Adding arguments to the parser
-    # ###NOT DONE, ONLY FIRST TRY###
     parser.add_argument('hash', action='store', choices=['md5', 'sha1', 'sha-256', 'sha-512', 'md5crypt'],
                         help="The hash type to perform a benchmark on.")
     # Parsing for path to supplied hash file, defaults
@@ -86,11 +85,8 @@ def main():
         hashcat = cat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
         hashcat_time = time.time() - hashcat_start
 
-        print_results("John", john, john_time, args.time)
-
-        print("\n")
-
-        print_results("Hashcat", hashcat, hashcat_time, args.time)
+        # Printin results and comparing
+        compare(john, hashcat, john_time, hashcat_time, args.time)
 
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
@@ -98,7 +94,7 @@ def main():
         if args.wordlistfile is None:
             parser.error("You need to specify a wordlist when benchmarking in wordlist mode!")
 
-        print("\nBenchmarking in wordlist mode.\n")
+        print("\nBenchmarking in wordlist mode on %s.\n" % args.hash)
 
         john_start = time.time()
         john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
@@ -107,16 +103,13 @@ def main():
         hashcat = cat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
         hashcat_time = time.time() - hashcat_start
 
-        print_results("Hashcat", hashcat, hashcat_time, args.time)
-
-        print("\n")
-
-        print_results("John", john, john_time, args.time)
+        # Printin results and comparing
+        compare(john, hashcat, john_time, hashcat_time, args.time)
 
     # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':
 
-        print("\nBenchmarking with John's markov mode.\n")
+        print("\nBenchmarking with John's markov mode on %s.\n" % args.hash)
 
         john_start = time.time()
         john = jtr.markov(hashes[0], hash_file, args.time)
