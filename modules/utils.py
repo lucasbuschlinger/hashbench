@@ -103,3 +103,22 @@ def order_rules(rules):
         return ordered_rules
     else:
         return rules
+
+
+# Helper to print some results
+def print_results(tool, results, time_run, time_spec):
+
+    hashes_per_sec = int(results[0] / time_run)
+    time_remaining = ((results[1] - results[0]) / (int(results[0] / time_run)))
+
+    print("Results for %s:" % tool)
+    print("  Average Speed: %.4f MH/s" % results[2])
+    print("  Cracked hashes: %d/%d" % (results[0], results[1]))
+    print("  Time run: %.4fs" % time_run)
+    print("  Theoretical number of cracked hashes per second: %d" % hashes_per_sec)
+    if time_run < time_spec:
+        print("  %s finished early! => Keyspace exhausted!" % tool)
+    else:
+        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect):"
+              " %.2fs"
+              % time_remaining)

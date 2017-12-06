@@ -83,7 +83,7 @@ class Hashcat:
         self.__out(process, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
+        return speeds.pop(0), speeds.pop(0), (sum(speeds) / len(speeds) / 1000000)
 
     # Method to brute force hashes with hashcat
     # Required inputs:
@@ -141,4 +141,4 @@ class Hashcat:
         thread_timeout.join()
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
+        return speeds.pop(0), speeds.pop(0), (sum(speeds) / len(speeds)/1000000)

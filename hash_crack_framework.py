@@ -76,71 +76,53 @@ def main():
 
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
+
         print("\nRunning brute force benchmark on %s.\n" % args.hash)
-        # noinspection PyUnboundLocalVariable
+
         john_start = time.time()
         john = jtr.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
-        john_end = time.time() - john_start
+        john_time = time.time() - john_start
         hashcat_start = time.time()
         hashcat = cat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
-        hashcat_end = time.time() - hashcat_start
-        print("Results for John:")
-        print("  Average Speed: %.4f MH/s" % john[2])
-        print("  Cracked hashes: %d/%d" % (john[0], john[1]))
-        print("  Time run: %.4fs" % john_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((john[1] - john[0]) / (int(john[0] / john_end))))
+        hashcat_time = time.time() - hashcat_start
+
+        print_results("John", john, john_time, args.time)
+
         print("\n")
-        print("Results for hashcat: ")
-        print("  Average Speed: %.4f MH/s" % (hashcat[2] / 1000000))
-        print("  Cracked hashes: %d/%d" % (hashcat[0], hashcat[1]))
-        print("  Time run: %.4fs" % hashcat_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(hashcat[0] / hashcat_end))
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((hashcat[1] - hashcat[0]) / (int(hashcat[0] / hashcat_end))))
+
+        print_results("Hashcat", hashcat, hashcat_time, args.time)
 
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
         # Checking whether a wordlist has been specified
         if args.wordlistfile is None:
             parser.error("You need to specify a wordlist when benchmarking in wordlist mode!")
+
         print("\nBenchmarking in wordlist mode.\n")
+
         john_start = time.time()
         john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
-        john_end = time.time() - john_start
+        john_time = time.time() - john_start
         hashcat_start = time.time()
         hashcat = cat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
-        hashcat_end = time.time() - hashcat_start
-        print("Results for John:")
-        print("  Average Speed: %.4f MH/s" % john[2])
-        print("  Cracked hashes: %d/%d" % (john[0], john[1]))
-        print("  Time run: %.4fs" % john_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((john[1] - john[0]) / (int(john[0] / john_end))))
+        hashcat_time = time.time() - hashcat_start
+
+        print_results("Hashcat", hashcat, hashcat_time, args.time)
+
         print("\n")
-        print("Results for hashcat: ")
-        print("  Average Speed: %.4f MH/s" % (hashcat[2] / 1000000))
-        print("  Cracked hashes: %d/%d" % (hashcat[0], hashcat[1]))
-        print("  Time run: %.4fs" % hashcat_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(hashcat[0] / hashcat_end))
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((hashcat[1] - hashcat[0]) / (int(hashcat[0] / hashcat_end))))
+
+        print_results("John", john, john_time, args.time)
 
     # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':
-        print("Running johns markov mode.")
+
+        print("\nBenchmarking with John's markov mode.\n")
+
         john_start = time.time()
         john = jtr.markov(hashes[0], hash_file, args.time)
-        john_end = time.time() - john_start
-        print("Results for John:")
-        print("  Average Speed: %.4f MH/s" % john[2])
-        print("  Cracked hashes: %d/%d" % (john[0], john[1]))
-        print("  Time run: %.4fs" % john_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
-        print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((john[1] - john[0]) / (int(john[0] / john_end))))
+        john_time = time.time() - john_start
+
+        print_results("John", john, john_time, args.time)
 
 
 # Executing
