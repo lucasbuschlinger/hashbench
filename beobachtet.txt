@@ -58,3 +58,40 @@ Results for hashcat:
   Time run: 263.2819s
   Theoretical number of cracked hashes per second: 37
   Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 1.92s
+
+lux@lux:~/Desktop/Praktikum$ python3 hash_crack_framework.py md5 bf -t 1
+
+Running brute force benchmark on md5.
+
+Results for John:
+  Average Speed: 4544.8710 MH/s
+  Cracked hashes: 4243/9999
+  Time run: 32.7787s
+  Theoretical number of cracked hashes per second: 129
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 44.62s
+
+
+Results for hashcat:
+  Average Speed: 5694.2001 MH/s
+  Cracked hashes: 4805/9999
+  Time run: 31.1242s
+  Theoretical number of cracked hashes per second: 154
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 33.73s
+lux@lux:~/Desktop/Praktikum$ python3 hash_crack_framework.py md5 bf -t 1 -disablemarkov
+
+Running brute force benchmark on md5.
+
+Results for John:
+  Average Speed: 4569.3871 MH/s
+  Cracked hashes: 4411/9999
+  Time run: 33.0717s
+  Theoretical number of cracked hashes per second: 133
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 42.02s
+
+
+Results for hashcat:
+  Average Speed: 5829.5327 MH/s
+  Cracked hashes: 2126/9999
+  Time run: 30.0812s
+  Theoretical number of cracked hashes per second: 70
+  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 112.47s

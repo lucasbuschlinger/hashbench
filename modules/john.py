@@ -13,7 +13,6 @@ class John:
     #   speeds:     the list to store the output in     list (mutable)
     # Returns:
     #   mutated list 'speeds' containing (number of cracked hashes, (speed)*)
-    # noinspection PyDefaultArgument
     @staticmethod
     def __out(process, ignore, speeds=[]):
         # Skipping the first #ignore lines as they are not relevant, except the second.
@@ -50,21 +49,24 @@ class John:
 
     # Method to perform a wordlist attack with John
     # Required inputs:
-    #   hash_type: type of hash                     string
-    #   hash_file: file containing the hash/hashes  string(path)
-    #   wordlist: file containing the wordlist      string(path)
-    #   rules: the rules to be applied              string(path)
-    #   max_exec_time: the maximum time to execute  integer
+    #   hash_type:      type of hash                    string
+    #   hash_file:      file containing the hash/hashes string(path)
+    #   wordlist:       file containing the wordlist    string(path)
+    #   rules:          the rules to be applied         string(path)
+    #   max_exec_time:  the maximum time to execute     integer
     # Returns:
-    #   list containing (number of cracked hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, average speed)
     def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
 
+        # Arguments for opening the subprocess
         process_args = "./john/run/john --wordlist={} {} --format={} --verbosity=1 --progress-every=1".format(
             wordlist, hash_file, hash_type)
 
+        # Adding rules to arguments, if specified
         if rules is not None:
             process_args += " --rules:{}".format(rules)
 
+        # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
             process_args += " --max-run-time={}".format(max_exec_time)
 
@@ -83,18 +85,20 @@ class John:
 
     # Method to brute force hashes with john
     # Required inputs:
-    #   hash_type: type of hash                     string
-    #   min: minimal password length to be tested   integer
-    #   max: maximum password length to be tested   integer
-    #   hash_file: file containing the hash/hashes  string(path)
-    #   max_exec_time: maximum time to execute      integer
+    #   hash_type:      type of hash                            string
+    #   min:            minimal password length to be tested    integer
+    #   max:            maximum password length to be tested    integer
+    #   hash_file:      file containing the hash/hashes         string(path)
+    #   max_exec_time:  maximum time to execute                 integer
     # Returns:
-    #   list containing (number of cracked hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, average speed)
     def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time):
 
+        # Arguments for opening the subprocess
         process_args = "./john/run/john --mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a -min-len={} -max-len={} {} --format={}" \
                        " --verbosity=1 --progress-every=1".format(min_length, max_length, hash_file, hash_type)
 
+        # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
             process_args += " --max-run-time={}".format(max_exec_time)
 
@@ -111,6 +115,14 @@ class John:
         # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
         return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
 
+    # Method to crack with markov chains
+    # Required inputs:
+    #   self:           reference to object
+    #   hash_type:      type of hash                    string
+    #   hash_file:      file containing the hashes      string(path)
+    #   max_exec_time:  maximum time to execute         integer
+    # Returns:
+    #   list containing (number if cracked hashes, total number of hashes, average speed)
     def markov(self, hash_type, hash_file, max_exec_time):
 
         # Setting a flag whether a maximum execution time was specified
@@ -119,8 +131,12 @@ class John:
         else:
             no_time = False
 
-        process = subprocess.Popen(["./john/run/john", "--markov", hash_file, "--format=raw-md5", "--verbosity=1",
-                                    "--progress-every=1"], universal_newlines=True, stdout=subprocess.PIPE,
+        # Arguments for opening the subprocess
+        process_args = "./john/run/john --markov {} --format={} --verbosity=1 --progress-every=1".format(hash_file,
+                                                                                                         hash_type)
+
+        # Spawn subprocess running an instance of john
+        process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
 
         # List to store number of cracked hashes and speeds
@@ -140,12 +156,12 @@ class John:
         while threading.active_count() == 3 or (no_time and (threading.active_count() == 2)):
             time.sleep(1)
 
-        # Terminating hashcat if timeout is reached
+        # Terminating john if timeout is reached
         if thread_output.is_alive():
             process.terminate()
         thread_output.join()
 
-        # Terminating timeout thread if hashcat is done earlier
+        # Terminating timeout thread if john is done earlier
         if thread_timeout.is_alive():
             com_queue.put("Exit")
         thread_timeout.join()

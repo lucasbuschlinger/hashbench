@@ -53,19 +53,24 @@ class Hashcat:
 
     # Method to perform a wordlist attack with hashcat
     # Required inputs:
-    #   hash_type:           type of hash                        integer
+    #   hash_type:      type of hash                        integer
     #   hash_file:      file containing the hash/hashes     string(path)
     #   wordlist:       file containing the wordlist        string(path)
     #   rules:          the rules to be applied             string(path)
     #   max_exec_time:  the maximum time to execute         integer
     # Returns:
-    #   list containing (number of cracked hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, average speed)
     def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
 
+        # Arguments for opening the subprocess
         process_args = "./hashcat/hashcat -a0 -m{} {} {} --status --status-timer 1 -w 3 -O -o /dev/null" \
                        " --machine-readable --quiet".format(hash_type, hash_file, wordlist)
+
+        # Adding rules to arguments, if specified
         if rules is not None:
             process_args += " -r {}".format(rules)
+
+        # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
             process_args += " --runtime={}".format(max_exec_time)
 
@@ -88,7 +93,7 @@ class Hashcat:
     #   hash_file:      file containing the hash/hashes          string(path)
     #   max_exec_time:  the maximum time to execute              integer
     # Returns:
-    #   list containing (number of cracked hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, average speed)
     def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time, no_markov):
 
         # Flag to specify whether a max execution time was given
@@ -97,10 +102,12 @@ class Hashcat:
         else:
             no_time = False
 
+        # Arguments for opening the subprocess
         process_args = "./hashcat/hashcat -m {} -a3 --increment --increment-min {} --increment-max {}" \
                        " {} ?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a --status --status-timer 1 -w 3 -O --machine-readable" \
                        " --quiet -o /dev/null".format(hash_type, min_length, max_length, hash_file)
 
+        # Adding flag to disable markov chains to arguments, if specified
         if no_markov:
             process_args += " --markov-disable"
 
@@ -119,8 +126,7 @@ class Hashcat:
         thread_timeout = threading.Thread(target=time_watcher, args=(max_exec_time, com_queue))
         thread_timeout.start()
 
-        # While both treads are running OR, if no maximum execution time was specified,
-        #  while hashcat is running we do absolutely nothing (wasting cycles... IS THERE A BETTER WAY?)
+        # While both treads are running OR, if no maximum execution time was specified, we stall this process
         while threading.active_count() == 3 or (no_time and (threading.active_count() == 2)):
             time.sleep(1)
 

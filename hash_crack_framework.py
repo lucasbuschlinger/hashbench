@@ -7,7 +7,6 @@ from modules.john import *
 
 # noinspection SpellCheckingInspection
 def main():
-
     # Removing potfiles to have maximum work to do
     subprocess.run(['rm', 'john/run/john.pot'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run(['rm', 'hashcat/hashcat.potfile'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -51,7 +50,7 @@ def main():
     # If a maximum execution time was specified in the CLI we convert it from the input minutes to seconds,
     # we do so by multiplying by 30 as each tool only runs for half of the specified time.
     if args.time is not None:
-        args.time = args.time*30
+        args.time = args.time * 30
 
     # Getting file path or trying to default
     if args.file:
@@ -71,6 +70,7 @@ def main():
     if args.maxlen:
         maxlen = args.maxlen
 
+    # Class objects of hashcat and john
     cat = Hashcat()
     jtr = John()
 
@@ -116,18 +116,19 @@ def main():
         print("  Average Speed: %.4f MH/s" % john[2])
         print("  Cracked hashes: %d/%d" % (john[0], john[1]))
         print("  Time run: %.4fs" % john_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(john[0]/john_end))
+        print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
         print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
               % ((john[1] - john[0]) / (int(john[0] / john_end))))
         print("\n")
         print("Results for hashcat: ")
-        print("  Average Speed: %.4f MH/s" % (hashcat[2]/1000000))
+        print("  Average Speed: %.4f MH/s" % (hashcat[2] / 1000000))
         print("  Cracked hashes: %d/%d" % (hashcat[0], hashcat[1]))
         print("  Time run: %.4fs" % hashcat_end)
-        print("  Theoretical number of cracked hashes per second: %d" % int(hashcat[0]/hashcat_end))
+        print("  Theoretical number of cracked hashes per second: %d" % int(hashcat[0] / hashcat_end))
         print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-              % ((hashcat[1]-hashcat[0])/(int(hashcat[0]/hashcat_end))))
+              % ((hashcat[1] - hashcat[0]) / (int(hashcat[0] / hashcat_end))))
 
+    # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':
         print("Running johns markov mode.")
         john_start = time.time()
@@ -139,7 +140,7 @@ def main():
         print("  Time run: %.4fs" % john_end)
         print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
         print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
-            % ((john[1] - john[0]) / (int(john[0] / john_end))))
+              % ((john[1] - john[0]) / (int(john[0] / john_end))))
 
 
 # Executing
