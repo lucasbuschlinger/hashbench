@@ -1,8 +1,8 @@
 import argparse
 import subprocess
-from utils import *
-from john import *
-from hashcat import *
+from modules.utils import *
+from modules.hashcat import *
+from modules.john import *
 
 
 # noinspection SpellCheckingInspection
@@ -36,6 +36,9 @@ def main():
     parser.add_argument('-maxlen', type=int, help="Maximum password length")
     # Parsing for supplied wordlist file
     parser.add_argument('-wordlistfile', '-wlf', help="Path to wordlist file", metavar="FILE")
+    # Parsing for flag to disable hashcats markov chains in bruteforce mode
+    parser.add_argument('-disablemarkov', action='store_true',
+                        help="Flag to disable hashcats markov chains in bruteforce mode")
 
     args = parser.parse_args()
 
@@ -68,15 +71,18 @@ def main():
     if args.maxlen:
         maxlen = args.maxlen
 
+    cat = Hashcat()
+    jtr = John()
+
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
         print("\nRunning brute force benchmark on %s.\n" % args.hash)
         # noinspection PyUnboundLocalVariable
         john_start = time.time()
-        john = john_bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
+        john = jtr.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
         john_end = time.time() - john_start
         hashcat_start = time.time()
-        hashcat = hashcat_bruteforce(hashes[1], minlen, maxlen, hash_file, args.time)
+        hashcat = cat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
         hashcat_end = time.time() - hashcat_start
         print("Results for John:")
         print("  Average Speed: %.4f MH/s" % john[2])
@@ -101,10 +107,10 @@ def main():
             parser.error("You need to specify a wordlist when benchmarking in wordlist mode!")
         print("\nBenchmarking in wordlist mode.\n")
         john_start = time.time()
-        john = john_wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
+        john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
         john_end = time.time() - john_start
         hashcat_start = time.time()
-        hashcat = hashcat_wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
+        hashcat = cat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
         hashcat_end = time.time() - hashcat_start
         print("Results for John:")
         print("  Average Speed: %.4f MH/s" % john[2])
@@ -125,7 +131,7 @@ def main():
     if args.mode == 'markov':
         print("Running johns markov mode.")
         john_start = time.time()
-        john = john_markov(hashes[0], hash_file, args.time)
+        john = jtr.markov(hashes[0], hash_file, args.time)
         john_end = time.time() - john_start
         print("Results for John:")
         print("  Average Speed: %.4f MH/s" % john[2])
@@ -134,5 +140,7 @@ def main():
         print("  Theoretical number of cracked hashes per second: %d" % int(john[0] / john_end))
         print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): %.2fs"
             % ((john[1] - john[0]) / (int(john[0] / john_end))))
+
+
 # Executing
 main()
