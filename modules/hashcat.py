@@ -38,7 +38,7 @@ class Hashcat:
                             # Next speed would be 2 positions further, if its NaN ('EXEC_RUNTIME') we're done
                             if not is_float(list_of_string[index]):
                                 break
-                        speeds.append(speed)
+                        speeds.append(speed/1000000)
                         # Number of recovered hashes is 8 positions further from 'EXEC_RUNTIME'
                         speeds[0] = int(list_of_string[index+8])
                         # Writing number of detected hashes, if not already done
@@ -59,7 +59,7 @@ class Hashcat:
     #   rules:          the rules to be applied             string(path)
     #   max_exec_time:  the maximum time to execute         integer
     # Returns:
-    #   list containing (number if cracked hashes, total number of hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, list of speeds)
     def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
 
         # Arguments for opening the subprocess
@@ -82,8 +82,8 @@ class Hashcat:
         # Calling the output collector
         self.__out(process, speeds)
 
-        # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), (sum(speeds) / len(speeds) / 1000000)
+        # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
+        return speeds.pop(0), speeds.pop(0), speeds
 
     # Method to brute force hashes with hashcat
     # Required inputs:
@@ -93,7 +93,7 @@ class Hashcat:
     #   hash_file:      file containing the hash/hashes          string(path)
     #   max_exec_time:  the maximum time to execute              integer
     # Returns:
-    #   list containing (number if cracked hashes, total number of hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, list of speeds)
     def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time, no_markov):
 
         # Flag to specify whether a max execution time was given
@@ -128,7 +128,7 @@ class Hashcat:
 
         # While both treads are running OR, if no maximum execution time was specified, we stall this process
         while threading.active_count() == 3 or (no_time and (threading.active_count() == 2)):
-            time.sleep(1)
+            time.sleep(0.1)
 
         # Terminating hashcat if timeout is reached
         if thread_output.is_alive():
@@ -140,5 +140,5 @@ class Hashcat:
             com_queue.put("Exit")
         thread_timeout.join()
 
-        # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), (sum(speeds) / len(speeds)/1000000)
+        # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
+        return speeds.pop(0), speeds.pop(0), speeds

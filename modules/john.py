@@ -55,7 +55,7 @@ class John:
     #   rules:          the rules to be applied         string(path)
     #   max_exec_time:  the maximum time to execute     integer
     # Returns:
-    #   list containing (number if cracked hashes, total number of hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, list of speeds)
     def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
 
         # Arguments for opening the subprocess
@@ -84,8 +84,8 @@ class John:
         # Calling the output collector
         self.__out(process, skip, speeds)
 
-        # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
+        # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
+        return speeds.pop(0), speeds.pop(0), speeds
 
     # Method to brute force hashes with john
     # Required inputs:
@@ -95,7 +95,7 @@ class John:
     #   hash_file:      file containing the hash/hashes         string(path)
     #   max_exec_time:  maximum time to execute                 integer
     # Returns:
-    #   list containing (number if cracked hashes, total number of hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, list of speeds)
     def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time):
 
         # Arguments for opening the subprocess
@@ -116,8 +116,8 @@ class John:
         # Calling the output collector
         self.__out(process, 4, speeds)
 
-        # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
+        # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
+        return speeds.pop(0), speeds.pop(0), speeds
 
     # Method to crack with markov chains
     # Required inputs:
@@ -126,7 +126,7 @@ class John:
     #   hash_file:      file containing the hashes      string(path)
     #   max_exec_time:  maximum time to execute         integer
     # Returns:
-    #   list containing (number if cracked hashes, total number of hashes, average speed)
+    #   list containing (number if cracked hashes, total number of hashes, list of speeds)
     def markov(self, hash_type, hash_file, max_exec_time):
 
         # Setting a flag whether a maximum execution time was specified
@@ -158,7 +158,7 @@ class John:
 
         # While both treads are running OR, if no maximum execution time was specified, we stall this process
         while threading.active_count() == 3 or (no_time and (threading.active_count() == 2)):
-            time.sleep(1)
+            time.sleep(0.1)
 
         # Terminating john if timeout is reached
         if thread_output.is_alive():
@@ -170,5 +170,5 @@ class John:
             com_queue.put("Exit")
         thread_timeout.join()
 
-        # Returning a tuple containing (#cracked hashes, #detected, hashes, average speed)
-        return speeds.pop(0), speeds.pop(0), sum(speeds) / len(speeds)
+        # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
+        return speeds.pop(0), speeds.pop(0), speeds

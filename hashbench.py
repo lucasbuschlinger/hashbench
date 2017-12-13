@@ -76,7 +76,7 @@ def main():
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
 
-        print("\nRunning brute force benchmark on %s.\n" % args.hash)
+        print("\nRunning brute force benchmark on %s for %d minutes.\n" % (args.hash, args.time/30))
 
         john_start = time.time()
         john = jtr.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
@@ -94,7 +94,7 @@ def main():
         if args.wordlistfile is None:
             parser.error("You need to specify a wordlist when benchmarking in wordlist mode!")
 
-        print("\nBenchmarking in wordlist mode on %s.\n" % args.hash)
+        print("\nBenchmarking in wordlist mode on %s for %d minutes.\n" % (args.hash, args.time/30))
 
         john_start = time.time()
         john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
@@ -109,7 +109,7 @@ def main():
     # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':
 
-        print("\nBenchmarking with John's markov mode on %s.\n" % args.hash)
+        print("\nBenchmarking with John's markov mode on %s for %d minutes.\n" % (args.hash, args.time/30))
 
         john_start = time.time()
         john = jtr.markov(hashes[0], hash_file, args.time)

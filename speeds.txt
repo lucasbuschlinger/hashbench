@@ -1,0 +1,99 @@
+5% Trim:
+
+    Running brute force benchmark on md5 for 1 minutes.
+
+    Results for John:
+      Mean speed: 4683.677 MH/s
+      Trimmed mean speed (trim: 5%): 4732.704 MH/s
+      Median speed: 4844.000 MH/s
+      Cracked hashes: 4466/9999
+      Time run: 33.044s
+      Number of cracked hashes per second: 135
+
+
+    Results for Hashcat:
+      Mean speed: 5708.958 MH/s
+      Trimmed mean speed (trim: 5%): 5857.577 MH/s
+      Median speed: 6463.301 MH/s
+      Cracked hashes: 4805/9999
+      Time run: 30.122s
+      Number of cracked hashes per second: 159
+
+    In comparison:
+      Speed-wise hashcat was 1.238x faster as john
+      Hashcat cracked 1.076x as many hashes as john
+
+    ===============================================
+
+    Running brute force benchmark on md5 for 10 minutes.
+
+    Results for John:
+      Mean speed: 4970.073 MH/s
+      Trimmed mean speed (trim: 5%): 4974.682 MH/s
+      Median speed: 5011.000 MH/s
+      Cracked hashes: 5043/9999
+      Time run: 302.675s
+      Number of cracked hashes per second: 16
+
+
+    Results for Hashcat:
+      Mean speed: 6475.418 MH/s
+      Trimmed mean speed (trim: 5%): 6487.238 MH/s
+      Median speed: 6577.232 MH/s
+      Cracked hashes: 5602/9999
+      Time run: 300.390s
+      Number of cracked hashes per second: 18
+
+    In comparison:
+      Speed-wise hashcat was 1.304x faster as john
+      Hashcat cracked 1.111x as many hashes as john
+__________________________________________________________________________________________
+10% Trim:
+
+   Running brute force benchmark on md5 for 1 minutes.
+
+    Results for John:
+      Mean speed: 4699.258 MH/s
+      Trimmed mean speed (trim: 10%): 4735.310 MH/s
+      Median speed: 4849.000 MH/s
+      Cracked hashes: 4466/9999
+      Time run: 33.156s
+      Number of cracked hashes per second: 134
+
+
+    Results for Hashcat:
+      Mean speed: 5597.486 MH/s
+      Trimmed mean speed (trim: 10%): 5673.019 MH/s
+      Median speed: 6221.023 MH/s
+      Cracked hashes: 4796/9999
+      Time run: 30.151s
+      Number of cracked hashes per second: 159
+
+    In comparison:
+      Speed-wise hashcat was 1.198x faster as john
+      Hashcat cracked 1.074x as many hashes as john
+
+    ===================================================
+
+    Running brute force benchmark on md5 for 10 minutes.
+
+    Results for John:
+      Mean speed: 5010.595 MH/s
+      Trimmed mean speed (trim: 10%): 5015.371 MH/s
+      Median speed: 5051.000 MH/s
+      Cracked hashes: 5074/9999
+      Time run: 303.121s
+      Number of cracked hashes per second: 16
+
+
+    Results for Hashcat:
+      Mean speed: 6525.998 MH/s
+      Trimmed mean speed (trim: 10%): 6537.739 MH/s
+      Median speed: 6638.042 MH/s
+      Cracked hashes: 5602/9999
+      Time run: 300.386s
+      Number of cracked hashes per second: 18
+
+    In comparison:
+      Speed-wise hashcat was 1.304x faster as john
+      Hashcat cracked 1.104x as many hashes as john
