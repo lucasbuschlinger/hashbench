@@ -56,7 +56,7 @@ class John:
     #   max_exec_time:  the maximum time to execute     integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
+    def wordlist(self, hash_type, hash_file, wordlist, rules, mask, max_exec_time):
 
         # Arguments for opening the subprocess
         process_args = "./john/run/john --wordlist={} {} --format={} --verbosity=1 --progress-every=1".format(
@@ -73,6 +73,9 @@ class John:
         # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
             process_args += " --max-run-time={}".format(max_exec_time)
+
+        if mask:
+            process_args += " --mask"
 
         # Spawn subprocess running an instance of john
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,

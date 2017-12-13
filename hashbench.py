@@ -37,6 +37,9 @@ def main():
     # Parsing for flag to disable hashcats markov chains in bruteforce mode
     parser.add_argument('-disablemarkov', action='store_true',
                         help="Flag to disable hashcats markov chains in bruteforce mode")
+    # Parsing for flag to use --mask on john's wordlist mode
+    parser.add_argument('-enablemask', action='store_true',
+                        help="Flag to enable --mask option on john's wordlist mode")
 
     args = parser.parse_args()
 
@@ -97,7 +100,7 @@ def main():
         print("\nBenchmarking in wordlist mode on %s for %d minutes.\n" % (args.hash, args.time/30))
 
         john_start = time.time()
-        john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.time)
+        john = jtr.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
         john_time = time.time() - john_start
         hashcat_start = time.time()
         hashcat = cat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
