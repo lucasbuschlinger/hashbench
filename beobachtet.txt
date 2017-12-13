@@ -95,3 +95,104 @@ Results for hashcat:
   Time run: 30.0812s
   Theoretical number of cracked hashes per second: 70
   Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect): 112.47s
+
+
+MD5 Wordlist without --mask on john:
+
+    Benchmarking in wordlist mode on md5 for 2 minutes.
+
+    Results for John:
+      Mean speed: 21.640 MH/s
+      Trimmed mean speed (trim: 10%): 21.785 MH/s
+      Median speed: 22.276 MH/s
+      Cracked hashes: 49898/49901
+      Time run: 61.970s
+      Number of cracked hashes per second: 805
+
+
+    Results for Hashcat:
+      Mean speed: 2827.119 MH/s
+      Trimmed mean speed (trim: 10%): 2849.056 MH/s
+      Median speed: 2843.143 MH/s
+      Cracked hashes: 37593/49901
+      Time run: 66.504s
+      Number of cracked hashes per second: 565
+
+    In comparison:
+      Speed-wise hashcat was 130.779x faster as john
+      Hashcat cracked 0.753x as many hashes as john
+
+MD5 Wordlist with --mask on john:
+
+    Benchmarking in wordlist mode on md5 for 2 minutes.
+
+    Results for John:
+      Mean speed: 2657.914 MH/s
+      Trimmed mean speed (trim: 10%): 2657.679 MH/s
+      Median speed: 2621.000 MH/s
+      Cracked hashes: 7317/49901
+      Time run: 61.772s
+      Number of cracked hashes per second: 118
+
+
+    Results for Hashcat:
+      Mean speed: 2805.408 MH/s
+      Trimmed mean speed (trim: 10%): 2818.119 MH/s
+      Median speed: 2810.821 MH/s
+      Cracked hashes: 37584/49901
+      Time run: 62.200s
+      Number of cracked hashes per second: 604
+
+    In comparison:
+      Speed-wise hashcat was 1.060x faster as john
+      Hashcat cracked 5.137x as many hashes as john
+
+MD5crypt Wordlist with --mask on john:
+
+    Benchmarking in wordlist mode on md5crypt for 2 minutes.
+
+    Results for John:
+      Mean speed: 3.015 MH/s
+      Trimmed mean speed (trim: 10%): 3.029 MH/s
+      Median speed: 3.070 MH/s
+      Cracked hashes: 1076/49886
+      Time run: 62.951s
+      Number of cracked hashes per second: 17
+
+
+    Results for Hashcat:
+      Mean speed: 3.666 MH/s
+      Trimmed mean speed (trim: 10%): 3.667 MH/s
+      Median speed: 3.662 MH/s
+      Cracked hashes: 5709/49886
+      Time run: 63.203s
+      Number of cracked hashes per second: 90
+
+    In comparison:
+      Speed-wise hashcat was 1.211x faster as john
+      Hashcat cracked 5.306x as many hashes as john
+
+MD5crypt Wordlist without --mask on john:
+
+    Benchmarking in wordlist mode on md5crypt for 2 minutes.
+
+    Results for John:
+      Mean speed: 2.389 MH/s
+      Trimmed mean speed (trim: 10%): 2.398 MH/s
+      Median speed: 2.426 MH/s
+      Cracked hashes: 49080/49886
+      Time run: 62.868s
+      Number of cracked hashes per second: 780
+
+
+    Results for Hashcat:
+      Mean speed: 3.635 MH/s
+      Trimmed mean speed (trim: 10%): 3.635 MH/s
+      Median speed: 3.633 MH/s
+      Cracked hashes: 5690/49886
+      Time run: 63.090s
+      Number of cracked hashes per second: 90
+
+    In comparison:
+      Speed-wise hashcat was 1.516x faster as john
+      Hashcat cracked 0.116x as many hashes as john

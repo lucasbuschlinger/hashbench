@@ -160,7 +160,8 @@ def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
 # Helper to trim outliers from the speed list
 def trim(speeds, trim_percentage):
     trim_amount = int(len(speeds)*trim_percentage)
-    for i in range(0, 2, trim_amount):
-        speeds.pop(0)
-        speeds.pop()
+    if trim_amount != 0:
+        for i in range(0, 2, trim_amount):
+            speeds.pop(0)
+            speeds.pop()
     return speeds
