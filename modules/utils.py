@@ -112,12 +112,12 @@ def print_results(tool, results, time_run, time_spec):
     hashes_per_sec = int(results[0] / time_run)
     time_remaining = ((results[1] - results[0]) / (int(results[0] / time_run)))
     mean_speed = statistics.mean(results[2])
-    trimmed_mean_speed = statistics.mean(trim(results[2], 0.1))
+    trimmed_mean_speed = statistics.mean(trim(results[2], 0.05))
     median_speed = statistics.median(results[2])
 
     print("Results for %s:" % tool)
     print("  Mean speed: %.3f MH/s" % mean_speed)
-    print("  Trimmed mean speed (trim: 10%%): %.3f MH/s" % trimmed_mean_speed)
+    print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
     print("  Median speed: %.3f MH/s" % median_speed)
     print("  Cracked hashes: %d/%d" % (results[0], results[1]))
     print("  Time run: %.3fs" % time_run)
@@ -160,8 +160,9 @@ def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
 # Helper to trim outliers from the speed list
 def trim(speeds, trim_percentage):
     trim_amount = int(len(speeds)*trim_percentage)
+    tmpspeeds = sorted(speeds)
     if trim_amount != 0:
         for i in range(0, 2, trim_amount):
-            speeds.pop(0)
-            speeds.pop()
-    return speeds
+            tmpspeeds.pop(0)
+            tmpspeeds.pop()
+    return tmpspeeds
