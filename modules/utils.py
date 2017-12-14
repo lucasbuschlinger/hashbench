@@ -161,8 +161,8 @@ def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
 def trim(speeds, trim_percentage):
     trim_amount = int(len(speeds)*trim_percentage)
     tmpspeeds = sorted(speeds)
-    if trim_amount != 0:
-        for i in range(0, 2, trim_amount):
+    if trim_amount > 1:
+        for i in range(0, trim_amount, 2):
             tmpspeeds.pop(0)
             tmpspeeds.pop()
     return tmpspeeds

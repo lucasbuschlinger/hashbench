@@ -99,3 +99,96 @@ ________________________________________________________________________________
     In comparison:
       Speed-wise hashcat was 1.298x faster as john
       Hashcat cracked 1.110x as many hashes as john
+
+
+Sample data from a 1min run
+
+Without ignoring first 15 values:
+  Mean speed john: 4612.258064516129
+  Median speed john: 4731.0
+  Trimmed (by 5%) mean speed of john: 4612.258064516129
+  Trimmed (by 10%) mean speed of john: 4657.814814814815
+  Trimmed (by 15%) mean speed of john: 4657.814814814815
+  Trimmed (by 20%) mean speed of john: 4671.28
+  Trimmed (by 25%) mean speed of john: 4682.173913043478
+  Min speed john: 3548.0
+  Max speed john: 4884.0
+
+With ignoring first 15 values:
+  Mean speed john: 4799.5
+  Median speed john: 4817.5
+  Trimmed (by 5%) mean speed of john: 4799.5
+  Trimmed (by 10%) mean speed of john: 4799.5
+  Trimmed (by 15%) mean speed of john: 4798.357142857143
+  Trimmed (by 20%) mean speed of john: 4800.166666666667
+  Trimmed (by 25%) mean speed of john: 4800.166666666667
+  Min speed john: 4731.0
+  Max speed john: 4884.0
+
+Without ignoring first 15 values:
+  Mean speed hashcat: 5721.451872566667
+  Median speed hashcat: 6331.189244
+  Trimmed (by 5%) mean speed of hashcat: 5721.451872566667
+  Trimmed (by 10%) mean speed of hashcat: 5903.293340884616
+  Trimmed (by 15%) mean speed of hashcat: 5903.293340884616
+  Trimmed (by 20%) mean speed of hashcat: 5978.390625291667
+  Trimmed (by 25%) mean speed of hashcat: 6067.279364272727
+  Min speed hashcat: 2403.502241
+  Max speed hashcat: 6472.530027
+
+With ignoring first 15 values:
+  Mean speed hashcat: 6418.984346333334
+  Median speed hashcat: 6438.773418
+  Trimmed (by 5%) mean speed of hashcat: 6418.984346333334
+  Trimmed (by 10%) mean speed of hashcat: 6418.984346333334
+  Trimmed (by 15%) mean speed of hashcat: 6422.339980076923
+  Trimmed (by 20%) mean speed of hashcat: 6427.646265454546
+  Trimmed (by 25%) mean speed of hashcat: 6427.646265454546
+  Min speed hashcat: 6321.815427
+  Max speed hashcat: 6472.530027
+
+Sample data from a 10min run
+
+Without ignoring first 15 values:
+  Mean speed john: 4929.87707641196
+  Median speed john: 4972.0
+  Trimmed (by 5%) mean speed of john: 4948.8561403508775
+  Trimmed (by 10%) mean speed of john: 4955.092250922509
+  Trimmed (by 15%) mean speed of john: 4960.466666666666
+  Trimmed (by 20%) mean speed of john: 4963.531120331951
+  Trimmed (by 25%) mean speed of john: 4966.008888888889
+  Min speed john: 3548.0
+  Max speed john: 4998.0
+
+With ignoring first 15 values:
+  Mean speed john: 4957.01048951049
+  Median speed john: 4973.0
+  Trimmed (by 5%) mean speed of john: 4961.591911764706
+  Trimmed (by 10%) mean speed of john: 4964.585271317829
+  Trimmed (by 15%) mean speed of john: 4966.713114754099
+  Trimmed (by 20%) mean speed of john: 4968.5307017543855
+  Trimmed (by 25%) mean speed of john: 4969.696261682243
+  Min speed john: 4731.0
+  Max speed john: 4998.0
+
+Without ignoring first 15 values:
+  Mean speed hashcat: 6383.892530933555
+  Median speed hashcat: 6484.094291
+  Trimmed (by 5%) mean speed of hashcat: 6467.033843522807
+  Trimmed (by 10%) mean speed of hashcat: 6477.455807143911
+  Trimmed (by 15%) mean speed of hashcat: 6480.108479603921
+  Trimmed (by 20%) mean speed of hashcat: 6480.794323609958
+  Trimmed (by 25%) mean speed of hashcat: 6481.022862302222
+  Min speed hashcat: 0.0
+  Max speed hashcat: 6671.143384
+
+With ignoring first 15 values:
+  Mean speed hashcat: 6458.01641343007
+  Median speed hashcat: 6499.260319999999
+  Trimmed (by 5%) mean speed of hashcat: 6488.859825279412
+  Trimmed (by 10%) mean speed of hashcat: 6489.991685573644
+  Trimmed (by 15%) mean speed of hashcat: 6490.617863131148
+  Trimmed (by 20%) mean speed of hashcat: 6491.101748166667
+  Trimmed (by 25%) mean speed of hashcat: 6491.417248453271
+  Min speed hashcat: 0.0
+  Max speed hashcat: 6671.143384
