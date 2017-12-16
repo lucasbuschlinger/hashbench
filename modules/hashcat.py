@@ -72,7 +72,7 @@ class Hashcat:
 
         # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
-            process_args += " --runtime={}".format(max_exec_time)
+            process_args += " --runtime={}".format(int(max_exec_time))
 
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE)
 
@@ -83,7 +83,21 @@ class Hashcat:
         self.__out(process, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        return speeds.pop(0), speeds.pop(0), speeds
+        if len(speeds) < 7:
+            ignore = 0
+        elif max_exec_time > 5:
+            ignore = 5
+        else:
+            print("WARNING: Very short execution time per run leading to slower speeds because of Hashcat having to"
+                  + " get up to speed")
+            ignore = int(0.1*max_exec_time)
+        cracked = speeds.pop(0)
+        detected = speeds.pop(0)
+        # Removing the speeds where hashcat is getting up to speed
+        for i in range(ignore):
+            speeds.pop(0)
+
+        return cracked, detected, speeds
 
     # Method to brute force hashes with hashcat
     # Required inputs:
@@ -141,4 +155,16 @@ class Hashcat:
         thread_timeout.join()
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        return speeds.pop(0), speeds.pop(0), speeds
+        if max_exec_time > 15:
+            ignore = 15
+        else:
+            print("WARNING: Very short execution time per run leading to slower speeds because of Hashcat having to"
+                  + " get up to speed")
+            ignore = int(0.1*max_exec_time)
+        cracked = speeds.pop(0)
+        detected = speeds.pop(0)
+        # Removing the speeds where hashcat is getting up to speed
+        for i in range(ignore):
+            speeds.pop(0)
+
+        return cracked, detected, speeds

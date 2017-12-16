@@ -107,10 +107,13 @@ def order_rules(rules):
 
 
 # Helper to print some results
-def print_results(tool, results, time_run, time_spec):
+def print_results(tool, results, run_times, time_spec):
 
-    hashes_per_sec = int(results[0] / time_run)
-    time_remaining = ((results[1] - results[0]) / (int(results[0] / time_run)))
+    avg_cracked = int(sum(results[0])/len(results[0]))
+    avg_detected = int(sum(results[1])/len(results[1]))
+    avg_time_run = float(sum(run_times)/len(run_times))
+    hashes_per_sec = int(avg_cracked / avg_time_run)
+    time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
     mean_speed = statistics.mean(results[2])
     trimmed_mean_speed = statistics.mean(trim(results[2], 0.05))
     median_speed = statistics.median(results[2])
@@ -119,42 +122,42 @@ def print_results(tool, results, time_run, time_spec):
     print("  Mean speed: %.3f MH/s" % mean_speed)
     print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
     print("  Median speed: %.3f MH/s" % median_speed)
-    print("  Cracked hashes: %d/%d" % (results[0], results[1]))
-    print("  Time run: %.3fs" % time_run)
-    print("  Number of cracked hashes per second: %d" % hashes_per_sec)
+    print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
+    print("  Time per run: %.3fs" % avg_time_run)
+    print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
 
-    if results[0] == results[1]:
-        print("  %s finished early, managed to crack all %d hashes!" % (tool, results[1]))
-    elif time_spec is not None:
-        if time_run < time_spec:
-            print("  %s finished early! => Keyspace exhausted!" % tool)
+    if avg_cracked == avg_detected:
+        print("  %s finished early, managed to crack all %d hashes!" % (tool, avg_detected))
+    #elif time_spec is not None:
+     #   if time_run < time_spec:
+      #      print("  %s finished early! => Keyspace exhausted!" % tool)
         #else:
         #    print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect):"
         #          " %.3fs"
         #          % time_remaining)
 
-    return trimmed_mean_speed
+    return trimmed_mean_speed, avg_cracked
 
 
 # Helper to compare the tools
 def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
 
-    john_speed = print_results("John", john_results, john_time, time_spec)
+    john = print_results("John", john_results, john_time, time_spec)
 
     print("\n")
 
-    hashcat_speed = print_results("Hashcat", hashcat_results, hashcat_time, time_spec)
+    hashcat = print_results("Hashcat", hashcat_results, hashcat_time, time_spec)
 
-    speed_comparison = hashcat_speed/john_speed
-    cracked_comparison = hashcat_results[0]/john_results[0]
+    speed_comparison = hashcat[0]/john[0]
+    cracked_comparison = hashcat[1]/john[1]
 
     print("\nIn comparison:")
     if speed_comparison >= 1:
-        print("  Speed-wise hashcat was %.3fx faster as john" % speed_comparison)
+        print("  Speed-wise Hashcat was %.3fx faster as John" % speed_comparison)
     else:
-        print("  Speed-wise hashcat was only %.3fx as fast as john" % speed_comparison)
+        print("  Speed-wise Hashcat was only %.3fx as fast as John" % speed_comparison)
 
-    print("  Hashcat cracked %.3fx as many hashes as john" % cracked_comparison)
+    print("  On average Hashcat cracked %.3fx as many hashes as John" % cracked_comparison)
 
 
 # Helper to trim outliers from the speed list
