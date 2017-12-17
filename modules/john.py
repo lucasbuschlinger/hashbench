@@ -92,8 +92,6 @@ class John:
             if max_exec_time > 10:
                 ignore = 10
             else:
-                print("WARNING: Very short execution time per run leading to slower speeds because of John having to"
-                      + " get up to speed")
                 ignore = 0
         elif mask:
             ignore = 1
@@ -141,8 +139,6 @@ class John:
         if max_exec_time > 2:
             ignore = 2
         else:
-            print("WARNING: Very short execution time per run leading to slower speeds because of John having to"
-                  + " get up to speed")
             ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)

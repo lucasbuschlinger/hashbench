@@ -88,8 +88,6 @@ class Hashcat:
         elif max_exec_time > 5:
             ignore = 5
         else:
-            print("WARNING: Very short execution time per run leading to slower speeds because of Hashcat having to"
-                  + " get up to speed")
             ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)
@@ -158,8 +156,6 @@ class Hashcat:
         if max_exec_time > 15:
             ignore = 15
         else:
-            print("WARNING: Very short execution time per run leading to slower speeds because of Hashcat having to"
-                  + " get up to speed")
             ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)

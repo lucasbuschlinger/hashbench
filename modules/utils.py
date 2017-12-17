@@ -1,6 +1,6 @@
 import time
 import queue
-import  statistics
+import statistics
 
 
 # Helper to map the given hash type to the required format by john and hashcat respectively
@@ -107,24 +107,43 @@ def order_rules(rules):
 
 
 # Helper to print some results
-def print_results(tool, results, run_times, time_spec):
+def print_results(tool, results, run_times, time_spec, individual_stats, runs):
 
     avg_cracked = int(sum(results[0])/len(results[0]))
     avg_detected = int(sum(results[1])/len(results[1]))
     avg_time_run = float(sum(run_times)/len(run_times))
     hashes_per_sec = int(avg_cracked / avg_time_run)
     time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
-    mean_speed = statistics.mean(results[2])
-    trimmed_mean_speed = statistics.mean(trim(results[2], 0.05))
-    median_speed = statistics.median(results[2])
+    all_speeds = concat_speedlists(results[2])
+    mean_speed = statistics.mean(all_speeds)
+    trimmed_mean_speed = statistics.mean(trim(all_speeds, 0.05))
+    median_speed = statistics.median(all_speeds)
 
-    print("Results for %s:" % tool)
+    print("Average results for %s over all runs:" % tool)
     print("  Mean speed: %.3f MH/s" % mean_speed)
     print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
     print("  Median speed: %.3f MH/s" % median_speed)
     print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
-    print("  Time per run: %.3fs" % avg_time_run)
+    print("  Average time per run: %.3fs" % avg_time_run)
     print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
+
+    if individual_stats:
+        print("\n  Individual stats:")
+        for i in range(runs):
+            cracked = int(results[0][i])
+            detected = int(results[1][i])
+            speeds = results[2][i]
+            time_run = run_times[i]
+            mean_speed = statistics.mean(speeds)
+            median_speed = statistics.median(speeds)
+            trimmed_mean_speed = statistics.mean(trim(speeds, 0.05))
+            print("    Statistics for %s's %d. run:" % (tool, i+1))
+            print("      Mean speed: %.3f MH/s" % mean_speed)
+            print("      Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
+            print("      Median speed: %.3f MH/s" % median_speed)
+            print("      Cracked hashes: %d/%d" % (cracked, detected))
+            print("      Time run: %.3fs" % time_run)
+            print("      Number of cracked hashes per second: %d" % int(cracked/time_run))
 
     if avg_cracked == avg_detected:
         print("  %s finished early, managed to crack all %d hashes!" % (tool, avg_detected))
@@ -140,13 +159,13 @@ def print_results(tool, results, run_times, time_spec):
 
 
 # Helper to compare the tools
-def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec):
+def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec, individual_stats, runs):
 
-    john = print_results("John", john_results, john_time, time_spec)
+    john = print_results("John", john_results, john_time, time_spec, individual_stats, runs)
 
     print("\n")
 
-    hashcat = print_results("Hashcat", hashcat_results, hashcat_time, time_spec)
+    hashcat = print_results("Hashcat", hashcat_results, hashcat_time, time_spec, individual_stats, runs)
 
     speed_comparison = hashcat[0]/john[0]
     cracked_comparison = hashcat[1]/john[1]
@@ -169,3 +188,11 @@ def trim(speeds, trim_percentage):
             tmpspeeds.pop(0)
             tmpspeeds.pop()
     return tmpspeeds
+
+
+# Helper to concatenate the lists of speeds produced by the multiple runs
+def concat_speedlists(inputlist):
+    tmplist = []
+    for i in range(len(inputlist)):
+        tmplist += inputlist[i]
+    return tmplist

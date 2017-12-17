@@ -3,6 +3,7 @@ import subprocess
 from modules.utils import *
 from modules.hashcat import *
 from modules.john import *
+import os
 
 
 # noinspection SpellCheckingInspection
@@ -39,6 +40,8 @@ def main():
                         help="Flag to enable --mask option on john's wordlist mode")
     # Paring for how many runs should be commenced.
     parser.add_argument('-multirun', type=int, default=1, help="Number of runs each tool should perform")
+    # Parsing for flag to print results for the individual runs
+    parser.add_argument('-individualstats', action='store_true', help="Flag to print out individual stats per run")
 
     args = parser.parse_args()
 
@@ -76,6 +79,10 @@ def main():
     hashcat = Hashcat()
     john = John()
 
+    if args.time <= 15:
+        print("WARNING: Very short execution time of %dsec per run. Consider longer runtimes" % args.time
+              + " (at least 30sec per run) to avoid slower times due to the tools having to get up to speed!")
+
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
 
@@ -86,9 +93,9 @@ def main():
             print("\nRunning brute force benchmark on %s, running %d times.\n" % (args.hash, args.multirun))
 
         # List for storing john's output
-        john_out = [[], []]
+        john_out = [], [], []
         # List for storing hashcat's output
-        hashcat_out = [[], []]
+        hashcat_out = [], [], []
 
         john_times = []
         hashcat_times =[]
@@ -96,8 +103,16 @@ def main():
         for var in range(args.multirun):
 
             # Removing potfiles to have maximum work to do
-            subprocess.run(['rm', 'john/run/john.pot'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.run(['rm', 'hashcat/hashcat.potfile'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                os.remove('john/run/john.pot')
+            except FileNotFoundError:
+                # If FileNotFoundError occurs it we do not have to delete it
+                pass
+            try:
+                os.remove('hashcat/hashcat.potfile')
+            except FileNotFoundError:
+                # If FileNotFoundError occurs it we do not have to delete it
+                pass
 
             john_start = time.time()
             john_tmpout = john.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
@@ -105,7 +120,7 @@ def main():
 
             john_out[0].append(john_tmpout[0])
             john_out[1].append(john_tmpout[1])
-            john_out.append(john_tmpout[2])
+            john_out[2].append(john_tmpout[2])
             john_times.append(john_end)
 
             hashcat_start = time.time()
@@ -114,11 +129,11 @@ def main():
 
             hashcat_out[0].append(hashcat_tmpout[0])
             hashcat_out[1].append(hashcat_tmpout[1])
-            hashcat_out.append(hashcat_tmpout[2])
+            hashcat_out[2].append(hashcat_tmpout[2])
             hashcat_times.append(hashcat_end)
 
         # Printing results and comparing
-        compare(john_out, hashcat_out, john_times, hashcat_times, args.time)
+        compare(john_out, hashcat_out, john_times, hashcat_times, args.time, args.individualstats, args.multirun)
 
     # Calling the wordlist methods and printing the tools speeds
     if args.mode == 'wordlist' or args.mode == 'wl':
@@ -132,25 +147,26 @@ def main():
         else:
             print("\nRunning wordlist benchmark on %s, running %d times.\n" % (args.hash, args.multirun))
 
-        #john_start = time.time()
-        #john_out = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
-        #john_times = time.time() - john_start
-        #hashcat_start = time.time()
-        #hashcat_out = hashcat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
-        #hashcat_time = time.time() - hashcat_start
-
         # List for storing john's output
-        john_out = [[], []]
+        john_out = [], [], []
         # List for storing hashcat's output
-        hashcat_out = [[], []]
+        hashcat_out = [], [], []
 
         john_times = []
         hashcat_times = []
 
         for var in range(args.multirun):
             # Removing potfiles to have maximum work to do
-            subprocess.run(['rm', 'john/run/john.pot'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.run(['rm', 'hashcat/hashcat.potfile'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                os.remove('john/run/john.pot')
+            except FileNotFoundError:
+                # If FileNotFoundError occurs it we do not have to delete it
+                pass
+            try:
+                os.remove('hashcat/hashcat.potfile')
+            except FileNotFoundError:
+                # If FileNotFoundError occurs it we do not have to delete it
+                pass
 
             john_start = time.time()
             john_tmpout = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
@@ -158,7 +174,7 @@ def main():
 
             john_out[0].append(john_tmpout[0])
             john_out[1].append(john_tmpout[1])
-            john_out.append(john_tmpout[2])
+            john_out[2].append(john_tmpout[2])
             john_times.append(john_end)
 
             hashcat_start = time.time()
@@ -167,11 +183,11 @@ def main():
 
             hashcat_out[0].append(hashcat_tmpout[0])
             hashcat_out[1].append(hashcat_tmpout[1])
-            hashcat_out.append(hashcat_tmpout[2])
+            hashcat_out[2].append(hashcat_tmpout[2])
             hashcat_times.append(hashcat_end)
 
         # Printin results and comparing
-        compare(john_out, hashcat_out, john_times, hashcat_times, args.time)
+        compare(john_out, hashcat_out, john_times, hashcat_times, args.time, args.individualstats, args.multirun)
 
     # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':

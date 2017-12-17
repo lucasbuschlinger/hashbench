@@ -1,0 +1,49 @@
+Running each tool once:
+
+Running brute force benchmark on md5, running each tool 1x 300sec for a total of 10min.
+
+Average results for John over all runs:
+  Mean speed: 3235.990 MH/s
+  Trimmed mean speed (trim: 5%): 3236.084 MH/s
+  Median speed: 3237.000 MH/s
+  Average cracked hashes per run: 8113/49901
+  Average time per run: 301.848s
+  Number of cracked hashes per second (per run): 26
+
+
+Average results for Hashcat over all runs:
+  Mean speed: 6490.132 MH/s
+  Trimmed mean speed (trim: 5%): 6507.145 MH/s
+  Median speed: 6522.704 MH/s
+  Average cracked hashes per run: 9792/49901
+  Average time per run: 300.415s
+  Number of cracked hashes per second (per run): 32
+
+In comparison:
+  Speed-wise Hashcat was 2.011x faster as John
+  On average Hashcat cracked 1.207x as many hashes as John
+=========================
+Running each tool 5x:
+
+Running brute force benchmark on md5, running each tool 5x 60sec for a total of 10min.
+
+Average results for John over all runs:
+  Mean speed: 3190.414 MH/s
+  Trimmed mean speed (trim: 5%): 3193.025 MH/s
+  Median speed: 3270.000 MH/s
+  Average cracked hashes per run: 6384/49901
+  Average time per run: 62.238s
+  Number of cracked hashes per second (per run): 102
+
+
+Average results for Hashcat over all runs:
+  Mean speed: 6370.212 MH/s
+  Trimmed mean speed (trim: 5%): 6377.740 MH/s
+  Median speed: 6471.403 MH/s
+  Average cracked hashes per run: 7712/49901
+  Average time per run: 60.164s
+  Number of cracked hashes per second (per run): 128
+
+In comparison:
+  Speed-wise Hashcat was 1.997x faster as John
+  On average Hashcat cracked 1.208x as many hashes as John
