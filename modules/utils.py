@@ -114,7 +114,9 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     avg_time_run = float(sum(run_times)/len(run_times))
     hashes_per_sec = int(avg_cracked / avg_time_run)
     time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
-    all_speeds = concat_speedlists(results[2])
+    temp = concat_speedlists(results[2])
+    all_speeds = temp[0]
+    avg_removed = statistics.mean(temp[1])
     mean_speed = statistics.mean(all_speeds)
     trimmed_mean_speed = statistics.mean(trim(all_speeds, 0.05))
     median_speed = statistics.median(all_speeds)
@@ -126,13 +128,16 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
     print("  Average time per run: %.3fs" % avg_time_run)
     print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
+    print("  On average the speeds of the first %d seconds were ignored (getting up to speed)" % int(avg_removed))
 
     if individual_stats:
         print("\n  Individual stats:")
         for i in range(runs):
             cracked = int(results[0][i])
             detected = int(results[1][i])
-            speeds = results[2][i]
+            temp = remove_startup(results[2][i])
+            speeds = temp[0]
+            removed = temp[1]
             time_run = run_times[i]
             mean_speed = statistics.mean(speeds)
             median_speed = statistics.median(speeds)
@@ -144,6 +149,7 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
             print("      Cracked hashes: %d/%d" % (cracked, detected))
             print("      Time run: %.3fs" % time_run)
             print("      Number of cracked hashes per second: %d" % int(cracked/time_run))
+            print("      The speeds of the first %d seconds were ignored (getting up to speed)" % removed)
 
     if avg_cracked == avg_detected:
         print("  %s finished early, managed to crack all %d hashes!" % (tool, avg_detected))
@@ -191,8 +197,24 @@ def trim(speeds, trim_percentage):
 
 
 # Helper to concatenate the lists of speeds produced by the multiple runs
+# Simultaneously removes the first x values where the tools get up to speed
 def concat_speedlists(inputlist):
     tmplist = []
+    removed = []
     for i in range(len(inputlist)):
+        removed.append(remove_startup(inputlist[i]))
         tmplist += inputlist[i]
-    return tmplist
+    return tmplist, removed
+
+
+# Helper to remove the slow speeds caused by startup
+def remove_startup(speeds=[]):
+    for i in range(len(speeds)-1):
+        mean_after = statistics.median(speeds[i+1:])
+        if speeds[i] > mean_after * 0.99:
+            break
+
+    for j in range(i):
+        speeds.pop(0)
+
+    return i

@@ -88,21 +88,8 @@ class John:
         self.__out(process, skip, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        if rules is not None:
-            if max_exec_time > 10:
-                ignore = 10
-            else:
-                ignore = 0
-        elif mask:
-            ignore = 1
-        else:
-            ignore = 0
-
         cracked = speeds.pop(0)
         detected = speeds.pop(0)
-        # Removing the speeds where hashcat is getting up to speed
-        for i in range(ignore):
-            speeds.pop(0)
 
         return cracked, detected, speeds
 
@@ -136,16 +123,8 @@ class John:
         self.__out(process, 4, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        if max_exec_time > 2:
-            ignore = 2
-        else:
-            ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)
-        # Removing the speeds where john is getting up to speed
-        for i in range(ignore):
-            speeds.pop(0)
-
         return cracked, detected, speeds
 
     # Method to crack with markov chains

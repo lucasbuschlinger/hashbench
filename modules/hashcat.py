@@ -83,18 +83,8 @@ class Hashcat:
         self.__out(process, speeds)
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        if len(speeds) < 7:
-            ignore = 0
-        elif max_exec_time > 5:
-            ignore = 5
-        else:
-            ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)
-        # Removing the speeds where hashcat is getting up to speed
-        for i in range(ignore):
-            speeds.pop(0)
-
         return cracked, detected, speeds
 
     # Method to brute force hashes with hashcat
@@ -153,14 +143,6 @@ class Hashcat:
         thread_timeout.join()
 
         # Returning a tuple containing (#cracked hashes, #detected, hashes, list of speeds)
-        if max_exec_time > 15:
-            ignore = 15
-        else:
-            ignore = int(0.1*max_exec_time)
         cracked = speeds.pop(0)
         detected = speeds.pop(0)
-        # Removing the speeds where hashcat is getting up to speed
-        for i in range(ignore):
-            speeds.pop(0)
-
         return cracked, detected, speeds
