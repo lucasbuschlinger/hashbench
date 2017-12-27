@@ -209,6 +209,7 @@ def concat_speedlists(inputlist):
 
 # Helper to remove the slow speeds caused by startup
 def remove_startup(speeds=[]):
+    i = 0
     for i in range(len(speeds)-1):
         mean_after = statistics.median(speeds[i+1:])
         if speeds[i] > mean_after * 0.99:

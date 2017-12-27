@@ -74,7 +74,8 @@ class Hashcat:
         if max_exec_time is not None:
             process_args += " --runtime={}".format(int(max_exec_time))
 
-        process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
+                                   encoding='utf-8')
 
         # List to store number of cracked hashes and speeds
         speeds = [0, 0]
@@ -114,7 +115,8 @@ class Hashcat:
             process_args += " --markov-disable"
 
         # Spawn subprocess running an instance of hashcat
-        process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
+                                   encoding='utf-8')
 
         # List to store number of cracked hashes and speeds
         speeds = [0, 0]
