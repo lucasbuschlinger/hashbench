@@ -118,13 +118,17 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     all_speeds = temp[0]
     avg_removed = statistics.mean(temp[1])
     mean_speed = statistics.mean(all_speeds)
+    standard_variance = statistics.stdev(all_speeds)
     trimmed_mean_speed = statistics.mean(trim(all_speeds, 0.05))
     median_speed = statistics.median(all_speeds)
+    quartile = quartiles(all_speeds)
 
     print("Average results for %s over all runs:" % tool)
-    print("  Mean speed: %.3f MH/s" % mean_speed)
+    print("  Mean speed: %.3f MH/s (Spread: %.3f (standard variance))" % (mean_speed, standard_variance))
     print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
-    print("  Median speed: %.3f MH/s" % median_speed)
+    print("  Median speed: %.3f MH/s (Quartiles as spread: %.3f (lower), %.3f (upper)" % (median_speed,
+                                                                                          quartile[0],
+                                                                                          quartile[1]))
     print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
     print("  Average time per run: %.3fs" % avg_time_run)
     print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
@@ -219,3 +223,12 @@ def remove_startup(speeds=[]):
         speeds.pop(0)
 
     return i
+
+
+# Helper to get lower and upper quartiles of the data supplied
+def quartiles(values):
+    tmpvalues = sorted(values)
+    entries = len(tmpvalues)
+    lower = int(entries * 0.25)
+    upper = int(entries * 0.75)
+    return tmpvalues[lower], tmpvalues[upper]
