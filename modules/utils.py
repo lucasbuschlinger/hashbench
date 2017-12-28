@@ -6,28 +6,18 @@ import statistics
 # Helper to map the given hash type to the required format by john and hashcat respectively
 # noinspection SpellCheckingInspection
 def arg_changer(hash_type):
-    hashes = []
-
     if hash_type == "md5":
-        hashes.append("raw-md5-opencl")
-        hashes.append(0)
+        return "raw-md5-opencl", 0
     elif hash_type == 'md4':
-        hashes.append("raw-md4-opencl")
-        hashes.append(900)
+        return "raw-md4-opencl", 900
     elif hash_type == 'sha1':
-        hashes.append("raw-sha1-opencl")
-        hashes.append(100)
+        return "raw-sha1-opencl", 100
     elif hash_type == 'sha-256':
-        hashes.append("raw-sha256-opencl")
-        hashes.append(1400)
+        return "raw-sha256-opencl", 1400
     elif hash_type == 'sha-512':
-        hashes.append("raw-sha512-opencl")
-        hashes.append(1700)
+        return "raw-sha512-opencl", 1700
     elif hash_type == 'md5crypt':
-        hashes.append('md5crypt-opencl')
-        hashes.append(500)
-
-    return hashes
+        return 'md5crypt-opencl', 500
 
 
 # Helper to check whether the given string is a float
@@ -121,14 +111,12 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     standard_variance = statistics.stdev(all_speeds)
     trimmed_mean_speed = statistics.mean(trim(all_speeds, 0.05))
     median_speed = statistics.median(all_speeds)
-    quartile = quartiles(all_speeds)
+    interquartile_range = quartiles_range(all_speeds)
 
     print("Average results for %s over all runs:" % tool)
-    print("  Mean speed: %.3f MH/s (Spread: %.3f (standard variance))" % (mean_speed, standard_variance))
+    print("  Mean speed: %.3f MH/s (Spread: %.3f MH/s (standard variance))" % (mean_speed, standard_variance))
     print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
-    print("  Median speed: %.3f MH/s (Quartiles as spread: %.3f (lower), %.3f (upper)" % (median_speed,
-                                                                                          quartile[0],
-                                                                                          quartile[1]))
+    print("  Median speed: %.3f MH/s (Spread: %.3f MH/s (interquartile range))" % (median_speed, interquartile_range))
     print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
     print("  Average time per run: %.3fs" % avg_time_run)
     print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
@@ -226,9 +214,14 @@ def remove_startup(speeds=[]):
 
 
 # Helper to get lower and upper quartiles of the data supplied
-def quartiles(values):
+def quartiles_range(values):
     tmpvalues = sorted(values)
     entries = len(tmpvalues)
-    lower = int(entries * 0.25)
-    upper = int(entries * 0.75)
-    return tmpvalues[lower], tmpvalues[upper]
+    if entries % 2 == 0:
+        lower = int(entries * 0.25)
+        upper = int(entries * 0.75)
+    else:
+        lower = int(entries * 0.25) + 1
+        upper = int(entries * 0.75) + 1
+        
+    return tmpvalues[upper] - tmpvalues[lower]

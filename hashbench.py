@@ -1,5 +1,4 @@
 import argparse
-import subprocess
 from modules.utils import *
 from modules.hashcat import *
 from modules.john import *
