@@ -223,5 +223,5 @@ def quartiles_range(values):
     else:
         lower = int(entries * 0.25) + 1
         upper = int(entries * 0.75) + 1
-        
+
     return tmpvalues[upper] - tmpvalues[lower]

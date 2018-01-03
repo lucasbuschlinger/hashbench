@@ -79,7 +79,7 @@ class John:
 
         # Spawn subprocess running an instance of john
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, encoding='utf-8')
+                                   stderr=subprocess.STDOUT, encoding='utf-8', errors='ignore')
 
         # List to store number of cracked hashes and speeds
         speeds = [0, 0]
@@ -114,7 +114,7 @@ class John:
 
         # Spawn subprocess running an instance of john
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, encoding='utf-8')
+                                   stderr=subprocess.STDOUT, encoding='utf-8', errors='ignore')
 
         # List to store number of cracked hashes and speeds
         speeds = [0, 0]
@@ -149,7 +149,7 @@ class John:
 
         # Spawn subprocess running an instance of john
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, encoding='utf-8')
+                                   stderr=subprocess.STDOUT, encoding='utf-8', errors='ignore')
 
         # List to store number of cracked hashes and speeds
         speeds = [0, 0]
