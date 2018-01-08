@@ -106,16 +106,19 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
     temp = concat_speedlists(results[2])
     all_speeds = temp[0]
+    all_speeds_trimmed = trim(all_speeds, 0.05)
     avg_removed = statistics.mean(temp[1])
     mean_speed = statistics.mean(all_speeds)
-    standard_variance = statistics.stdev(all_speeds)
-    trimmed_mean_speed = statistics.mean(trim(all_speeds, 0.05))
+    standard_deviation = statistics.stdev(all_speeds)
+    trimmed_mean_speed = statistics.mean(all_speeds_trimmed)
+    standard_deviation_trimmed = statistics.stdev(all_speeds_trimmed)
     median_speed = statistics.median(all_speeds)
     interquartile_range = quartiles_range(all_speeds)
 
     print("Average results for %s over all runs:" % tool)
-    print("  Mean speed: %.3f MH/s (Spread: %.3f MH/s (standard variance))" % (mean_speed, standard_variance))
-    print("  Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
+    print("  Mean speed: %.3f MH/s (Spread: %.3f MH/s (standard deviation))" % (mean_speed, standard_deviation))
+    print("  Trimmed mean speed (trim: 5%%): %.3f MH/s (Spread: %.3f MH/s (standard deviation))"
+          % (trimmed_mean_speed, standard_deviation_trimmed))
     print("  Median speed: %.3f MH/s (Spread: %.3f MH/s (interquartile range))" % (median_speed, interquartile_range))
     print("  Average cracked hashes per run: %d/%d" % (avg_cracked, avg_detected))
     print("  Average time per run: %.3fs" % avg_time_run)
@@ -203,8 +206,8 @@ def concat_speedlists(inputlist):
 def remove_startup(speeds=[]):
     i = 0
     for i in range(len(speeds)-1):
-        mean_after = statistics.median(speeds[i+1:])
-        if speeds[i] > mean_after * 0.99:
+        median_after = statistics.median(speeds[i+1:])
+        if speeds[i] > median_after * 0.99:
             break
 
     for j in range(i):
