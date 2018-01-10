@@ -56,6 +56,10 @@ def main():
     if args.time is not None:
         args.time = args.time * 30 / args.multirun
 
+        if args.time <= 15:
+            print("\nWARNING: Very short execution time of %dsec per run. Consider longer runtimes" % args.time
+                  + " (at least 30sec per run) to avoid slower times due to the tools having to get up to speed!")
+
     # Getting file path or trying to default
     if args.file:
         hash_file = args.file
@@ -78,10 +82,6 @@ def main():
     hashcat = Hashcat()
     john = John()
 
-    if args.time <= 15:
-        print("WARNING: Very short execution time of %dsec per run. Consider longer runtimes" % args.time
-              + " (at least 30sec per run) to avoid slower times due to the tools having to get up to speed!")
-
     # Calling the brute force methods and printing the tools speeds
     if args.mode == 'bruteforce' or args.mode == 'bf':
 
@@ -99,37 +99,46 @@ def main():
         john_times = []
         hashcat_times =[]
 
-        for var in range(args.multirun):
+        try:
 
-            # Removing potfiles to have maximum work to do
-            try:
-                os.remove('john/run/john.pot')
-            except FileNotFoundError:
-                # If FileNotFoundError occurs it we do not have to delete it
-                pass
-            try:
-                os.remove('hashcat/hashcat.potfile')
-            except FileNotFoundError:
-                # If FileNotFoundError occurs it we do not have to delete it
-                pass
+            for var in range(args.multirun):
 
-            john_start = time.time()
-            john_tmpout = john.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
-            john_end = time.time() - john_start
+                # Removing potfiles to have maximum work to do
+                try:
+                    os.remove('john/run/john.pot')
+                except FileNotFoundError:
+                    # If FileNotFoundError occurs it we do not have to delete it
+                    pass
+                try:
+                    os.remove('hashcat/hashcat.potfile')
+                except FileNotFoundError:
+                    # If FileNotFoundError occurs it we do not have to delete it
+                    pass
 
-            john_out[0].append(john_tmpout[0])
-            john_out[1].append(john_tmpout[1])
-            john_out[2].append(john_tmpout[2])
-            john_times.append(john_end)
+                john_start = time.time()
+                john_tmpout = john.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
+                john_end = time.time() - john_start
 
-            hashcat_start = time.time()
-            hashcat_tmpout = hashcat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
-            hashcat_end = time.time() - hashcat_start
+                john_out[0].append(john_tmpout[0])
+                john_out[1].append(john_tmpout[1])
+                john_out[2].append(john_tmpout[2])
+                john_times.append(john_end)
+                print("8")
+                hashcat_start = time.time()
+                hashcat_tmpout = hashcat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
+                hashcat_end = time.time() - hashcat_start
 
-            hashcat_out[0].append(hashcat_tmpout[0])
-            hashcat_out[1].append(hashcat_tmpout[1])
-            hashcat_out[2].append(hashcat_tmpout[2])
-            hashcat_times.append(hashcat_end)
+                hashcat_out[0].append(hashcat_tmpout[0])
+                hashcat_out[1].append(hashcat_tmpout[1])
+                hashcat_out[2].append(hashcat_tmpout[2])
+                hashcat_times.append(hashcat_end)
+
+        except KeyboardInterrupt:
+            if var == 0:
+                print("\rEarly exit due to KeyboardInterrupt. No data to display (0 runs completed)")
+                exit(1)
+            else:
+                print("\rEarly exit due to KeyboardInterrupt => Fewer data available (only %d run(s) completed)\n" % var)
 
         # Printing results and comparing
         compare(john_out, hashcat_out, john_times, hashcat_times, args.time, args.individualstats, args.multirun)

@@ -99,11 +99,15 @@ def order_rules(rules):
 # Helper to print some results
 def print_results(tool, results, run_times, time_spec, individual_stats, runs):
 
+    if len(run_times) == 0 or len(results[0]) == 0 or len(results[1]) == 0 or len(results[2]) == 0:
+        print("No sufficient data for %s => no statistics displayed" % tool)
+        return -1, -1
+
     avg_cracked = int(sum(results[0])/len(results[0]))
     avg_detected = int(sum(results[1])/len(results[1]))
     avg_time_run = float(sum(run_times)/len(run_times))
     hashes_per_sec = int(avg_cracked / avg_time_run)
-    time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
+    # time_remaining = ((avg_detected - avg_cracked) / hashes_per_sec)
     temp = concat_speedlists(results[2])
     all_speeds = temp[0]
     all_speeds_trimmed = trim(all_speeds, 0.05)
@@ -171,13 +175,16 @@ def compare(john_results, hashcat_results, john_time, hashcat_time, time_spec, i
     speed_comparison = hashcat[0]/john[0]
     cracked_comparison = hashcat[1]/john[1]
 
-    print("\nIn comparison:")
-    if speed_comparison >= 1:
-        print("  Speed-wise Hashcat was %.3fx faster as John" % speed_comparison)
-    else:
-        print("  Speed-wise Hashcat was only %.3fx as fast as John" % speed_comparison)
+    if hashcat[0] != -1 and john[0] != -1:
+        print("\nIn comparison:")
+        if speed_comparison >= 1:
+            print("  Speed-wise Hashcat was %.3fx faster as John" % speed_comparison)
+        else:
+            print("  Speed-wise Hashcat was only %.3fx as fast as John" % speed_comparison)
 
-    print("  On average Hashcat cracked %.3fx as many hashes as John" % cracked_comparison)
+        print("  On average Hashcat cracked %.3fx as many hashes as John" % cracked_comparison)
+    else:
+        pass
 
 
 # Helper to trim outliers from the speed list

@@ -25,8 +25,8 @@ class Hashcat:
             # Read as long as there is data in stdout
             while True:
                 line = process.stdout.readline()
-                if line != '':
-                    list_of_string = line.split()
+                list_of_string = line.split()
+                if len(list_of_string) > 0:
                     # Omitting non status lines
                     if list_of_string[0] == 'STATUS':
                         speed = 0

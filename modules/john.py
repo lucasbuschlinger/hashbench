@@ -25,9 +25,9 @@ class John:
             # Read as long as there is data in stdout
             while True:
                 line = process.stdout.readline()
+                list_of_string = line.split()
 
-                if line != '':
-                    list_of_string = line.split()
+                if len(list_of_string) > 0:
                     # Checking the first element as this indicates whether we have a valid line
                     first_elem = list_of_string[0][:-1]
                     if is_float(first_elem):
