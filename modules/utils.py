@@ -1,7 +1,7 @@
 import time
 import queue
 import statistics
-
+from copy import deepcopy
 
 # Helper to map the given hash type to the required format by john and hashcat respectively
 # noinspection SpellCheckingInspection
@@ -42,7 +42,7 @@ def unit_converter(value):
             return float(value)/1000/1000
         else:
             # Might want to throw an exception here...
-            print("NO VALID TYPE")
+            raise ValueError("Wrong prefix multiplier for H/s given")
 
 
 # Helper to supply correct default hash file to tools, if given
@@ -129,36 +129,44 @@ def print_results(tool, results, run_times, time_spec, individual_stats, runs):
     print("  Number of cracked hashes per second (per run): %d" % hashes_per_sec)
     print("  On average the speeds of the first %d seconds were ignored (getting up to speed)" % int(avg_removed))
 
-    if individual_stats:
+    if avg_cracked == avg_detected:
+        print("  %s finished early, managed to crack all %d hashes!" % (tool, avg_detected))
+    elif time_spec is not None:
+        if avg_time_run < time_spec:
+            print("  %s finished early! => Keyspace exhausted!" % tool)
+
+    if individual_stats and runs > 1:
         print("\n  Individual stats:")
         for i in range(runs):
             cracked = int(results[0][i])
             detected = int(results[1][i])
-            temp = remove_startup(results[2][i])
-            speeds = temp[0]
-            removed = temp[1]
             time_run = run_times[i]
-            mean_speed = statistics.mean(speeds)
-            median_speed = statistics.median(speeds)
-            trimmed_mean_speed = statistics.mean(trim(speeds, 0.05))
+            hashes_per_sec = int(cracked / time_run)
+            removed = remove_startup(results[2][i])
+            mean_speed = statistics.mean(results[2][i])
+            median_speed = statistics.median(results[2][i])
+            trimmed_speeds = trim(results[2][i], 0.05)
+            trimmed_mean_speed = statistics.mean(trimmed_speeds)
+            if (len(results[2][i])) > 1:
+                standard_deviation = statistics.stdev(results[2][i])
+            else:
+                standard_deviation = 0
+            if len(trimmed_speeds) > 1:
+                standard_deviation_trimmed = statistics.stdev(trimmed_speeds)
+            else:
+                standard_deviation_trimmed = 0
+            interquartile_range = quartiles_range(results[2][i])
             print("    Statistics for %s's %d. run:" % (tool, i+1))
-            print("      Mean speed: %.3f MH/s" % mean_speed)
-            print("      Trimmed mean speed (trim: 5%%): %.3f MH/s" % trimmed_mean_speed)
-            print("      Median speed: %.3f MH/s" % median_speed)
+            print("      Mean speed: %.3f MH/s (Spread: %.3f MH/s (standard deviation))"
+                  % (mean_speed, standard_deviation))
+            print("      Trimmed mean speed (trim: 5%%): %.3f MH/s (Spread: %.3f MH/s (standard deviation))"
+                  % (trimmed_mean_speed, standard_deviation_trimmed))
+            print("      Median speed: %.3f MH/s (Spread: %.3f MH/s (interquartile range))"
+                  % (median_speed, interquartile_range))
             print("      Cracked hashes: %d/%d" % (cracked, detected))
             print("      Time run: %.3fs" % time_run)
-            print("      Number of cracked hashes per second: %d" % int(cracked/time_run))
+            print("      Number of cracked hashes per second: %d" % hashes_per_sec)
             print("      The speeds of the first %d seconds were ignored (getting up to speed)" % removed)
-
-    if avg_cracked == avg_detected:
-        print("  %s finished early, managed to crack all %d hashes!" % (tool, avg_detected))
-    #elif time_spec is not None:
-     #   if time_run < time_spec:
-      #      print("  %s finished early! => Keyspace exhausted!" % tool)
-        #else:
-        #    print("  Theoretical time to crack remaining hashes (using average cracking rate, probably incorrect):"
-        #          " %.3fs"
-        #          % time_remaining)
 
     return trimmed_mean_speed, avg_cracked
 
@@ -203,9 +211,10 @@ def trim(speeds, trim_percentage):
 def concat_speedlists(inputlist):
     tmplist = []
     removed = []
+    copy = deepcopy(inputlist)
     for i in range(len(inputlist)):
-        removed.append(remove_startup(inputlist[i]))
-        tmplist += inputlist[i]
+        removed.append(remove_startup(copy[i]))
+        tmplist += copy[i]
     return tmplist, removed
 
 
@@ -227,11 +236,16 @@ def remove_startup(speeds=[]):
 def quartiles_range(values):
     tmpvalues = sorted(values)
     entries = len(tmpvalues)
-    if entries % 2 == 0:
-        lower = int(entries * 0.25)
-        upper = int(entries * 0.75)
-    else:
-        lower = int(entries * 0.25) + 1
-        upper = int(entries * 0.75) + 1
+    # Interquartile range only makes sense a sufficient amount of multiple values
+    if entries > 3:
+        if entries % 2 == 0:
+            lower = int(entries * 0.25)
+            upper = int(entries * 0.75)
+        else:
+            lower = int(entries * 0.25) + 1
+            upper = int(entries * 0.75) + 1
 
-    return tmpvalues[upper] - tmpvalues[lower]
+        return tmpvalues[upper] - tmpvalues[lower]
+
+    else:
+        return 0

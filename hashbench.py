@@ -13,7 +13,7 @@ def main():
     # usage=usage(), add_help=False)#might wanna write own help
 
     # Adding arguments to the parser
-    parser.add_argument('hash', action='store', choices=['md5', 'sha1', 'sha-256', 'sha-512', 'md5crypt'],
+    parser.add_argument('hash', action='store', choices=['md4', 'md5', 'sha1', 'sha-256', 'sha-512', 'md5crypt'],
                         help="The hash type to perform a benchmark on.")
     # Parsing for path to supplied hash file, defaults
     parser.add_argument('mode', type=str, choices=['bruteforce', 'bf', 'wordlist', 'wl', 'markov'],
@@ -40,7 +40,9 @@ def main():
     # Paring for how many runs should be commenced.
     parser.add_argument('-multirun', type=int, default=1, help="Number of runs each tool should perform")
     # Parsing for flag to print results for the individual runs
-    parser.add_argument('-individualstats', action='store_true', help="Flag to print out individual stats per run")
+    parser.add_argument('-individualstats', action='store_true',
+                        help="Flag to print out individual stats per run"
+                             " (only takes effect when more than 1 run is performed)")
 
     args = parser.parse_args()
 
@@ -123,7 +125,7 @@ def main():
                 john_out[1].append(john_tmpout[1])
                 john_out[2].append(john_tmpout[2])
                 john_times.append(john_end)
-                print("8")
+
                 hashcat_start = time.time()
                 hashcat_tmpout = hashcat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
                 hashcat_end = time.time() - hashcat_start
