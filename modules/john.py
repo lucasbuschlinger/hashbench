@@ -135,7 +135,7 @@ class John:
     #   max_exec_time:  maximum time to execute         integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def markov(self, hash_type, hash_file, max_exec_time):
+    def markov(self, hash_type, hash_file, mask, max_exec_time):
 
         # Setting a flag whether a maximum execution time was specified
         if max_exec_time is None:
@@ -146,6 +146,9 @@ class John:
         # Arguments for opening the subprocess
         process_args = "./john/run/john --markov {} --format={} --verbosity=1 --progress-every=1".format(hash_file,
                                                                                                          hash_type)
+
+        if mask:
+            process_args += " --mask"
 
         # Spawn subprocess running an instance of john
         process = subprocess.Popen(shlex.split(process_args), universal_newlines=True, stdout=subprocess.PIPE,
@@ -161,7 +164,7 @@ class John:
         thread_output = threading.Thread(target=self.__out, args=(process, 4, speeds))
         thread_output.start()
         # This thread keeps a look on the time(out)
-        thread_timeout = threading.Thread(target=time_watcher, args=(int(max_exec_time), com_queue))
+        thread_timeout = threading.Thread(target=time_watcher, args=(max_exec_time, com_queue))
         thread_timeout.start()
 
         # While both treads are running OR, if no maximum execution time was specified, we stall this process

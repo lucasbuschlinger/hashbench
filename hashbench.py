@@ -3,6 +3,7 @@ from modules.utils import *
 from modules.hashcat import *
 from modules.john import *
 import os
+import time
 
 
 # noinspection SpellCheckingInspection
@@ -211,13 +212,46 @@ def main():
     # Calling the markov mode of john and printing it's speed
     if args.mode == 'markov':
 
-        print("\nBenchmarking with John's markov mode on %s for %d minutes.\n" % (args.hash, args.time/30))
+        if args.time is not None:
+            args.time *= 2
+            print("\nBenchmarking John's markov mode on %s, running %dx %dsec for a total of %dmin.\n"
+                  % (args.hash, args.multirun, args.time, runtime))
+        else:
+            print("\nBenchmarking John's markov mode on %s, running %d times.\n" % (args.hash, args.multirun))
+            print("WARNING: This might not terminate within reasonable time!")
 
-        john_start = time.time()
-        john_out = john.markov(hashes[0], hash_file, args.time)
-        john_times = time.time() - john_start
+        # List for storing john's output
+        john_out = [], [], []
+        john_times = []
 
-        print_results("John", john_out, john_times, args.time)
+        try:
+
+            for var in range(args.multirun):
+                # Removing potfiles to have maximum work to do
+                try:
+                    os.remove('john/run/john.pot')
+                except FileNotFoundError:
+                    # If FileNotFoundError occurs we do not have to delete it
+                    pass
+
+                john_start = time.time()
+                john_tmpout = john.markov(hashes[0], hash_file, args.enablemask, args.time)
+                john_end = time.time() - john_start
+
+                john_out[0].append(john_tmpout[0])
+                john_out[1].append(john_tmpout[1])
+                john_out[2].append(john_tmpout[2])
+                john_times.append(john_end)
+
+        except KeyboardInterrupt:
+            if var == 0:
+                print("\rEarly exit due to KeyboardInterrupt. No data to display (0 runs completed)")
+                print("Exiting...")
+                exit(1)
+            else:
+                print("\rEarly exit due to KeyboardInterrupt => Fewer data available (only %d run(s) completed)\n" % var)
+
+        print_results("John", john_out, john_times, args.time, args.individualstats, args.multirun)
 
 
 # Executing
