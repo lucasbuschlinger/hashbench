@@ -109,12 +109,12 @@ def main():
                 try:
                     os.remove('john/run/john.pot')
                 except FileNotFoundError:
-                    # If FileNotFoundError occurs it we do not have to delete it
+                    # If FileNotFoundError occurs we do not have to delete it
                     pass
                 try:
                     os.remove('hashcat/hashcat.potfile')
                 except FileNotFoundError:
-                    # If FileNotFoundError occurs it we do not have to delete it
+                    # If FileNotFoundError occurs we do not have to delete it
                     pass
 
                 john_start = time.time()
@@ -165,36 +165,45 @@ def main():
         john_times = []
         hashcat_times = []
 
-        for var in range(args.multirun):
-            # Removing potfiles to have maximum work to do
-            try:
-                os.remove('john/run/john.pot')
-            except FileNotFoundError:
-                # If FileNotFoundError occurs it we do not have to delete it
-                pass
-            try:
-                os.remove('hashcat/hashcat.potfile')
-            except FileNotFoundError:
-                # If FileNotFoundError occurs it we do not have to delete it
-                pass
+        try:
 
-            john_start = time.time()
-            john_tmpout = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
-            john_end = time.time() - john_start
+            for var in range(args.multirun):
+                # Removing potfiles to have maximum work to do
+                try:
+                    os.remove('john/run/john.pot')
+                except FileNotFoundError:
+                    # If FileNotFoundError occurs we do not have to delete it
+                    pass
+                try:
+                    os.remove('hashcat/hashcat.potfile')
+                except FileNotFoundError:
+                    # If FileNotFoundError occurs we do not have to delete it
+                    pass
 
-            john_out[0].append(john_tmpout[0])
-            john_out[1].append(john_tmpout[1])
-            john_out[2].append(john_tmpout[2])
-            john_times.append(john_end)
+                john_start = time.time()
+                john_tmpout = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
+                john_end = time.time() - john_start
 
-            hashcat_start = time.time()
-            hashcat_tmpout = hashcat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
-            hashcat_end = time.time() - hashcat_start
+                john_out[0].append(john_tmpout[0])
+                john_out[1].append(john_tmpout[1])
+                john_out[2].append(john_tmpout[2])
+                john_times.append(john_end)
 
-            hashcat_out[0].append(hashcat_tmpout[0])
-            hashcat_out[1].append(hashcat_tmpout[1])
-            hashcat_out[2].append(hashcat_tmpout[2])
-            hashcat_times.append(hashcat_end)
+                hashcat_start = time.time()
+                hashcat_tmpout = hashcat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
+                hashcat_end = time.time() - hashcat_start
+
+                hashcat_out[0].append(hashcat_tmpout[0])
+                hashcat_out[1].append(hashcat_tmpout[1])
+                hashcat_out[2].append(hashcat_tmpout[2])
+                hashcat_times.append(hashcat_end)
+
+        except KeyboardInterrupt:
+            if var == 0:
+                print("\rEarly exit due to KeyboardInterrupt. No data to display (0 runs completed)")
+                exit(1)
+            else:
+                print("\rEarly exit due to KeyboardInterrupt => Fewer data available (only %d run(s) completed)\n" % var)
 
         # Printin results and comparing
         compare(john_out, hashcat_out, john_times, hashcat_times, args.time, args.individualstats, args.multirun)
