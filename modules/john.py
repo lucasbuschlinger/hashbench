@@ -56,11 +56,11 @@ class John:
     #   max_exec_time:  the maximum time to execute     integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def wordlist(self, hash_type, hash_file, wordlist, rules, mask, max_exec_time):
+    def wordlist(self, hash_type, hash_file, wordlist, rules, mask, max_exec_time, location):
 
         # Arguments for opening the subprocess
-        process_args = "./john/run/john --wordlist={} {} --format={} --verbosity=1 --progress-every=1".format(
-            wordlist, hash_file, hash_type)
+        process_args = "{} --wordlist={} {} --format={} --verbosity=1 --progress-every=1".format(
+            location, wordlist, hash_file, hash_type)
 
         # Number of lines to skip in output
         skip = 3
@@ -102,11 +102,12 @@ class John:
     #   max_exec_time:  maximum time to execute                 integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time):
+    def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time, location):
 
         # Arguments for opening the subprocess
-        process_args = "./john/run/john --mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a -min-len={} -max-len={} {} --format={}" \
-                       " --verbosity=1 --progress-every=1".format(min_length, max_length, hash_file, hash_type)
+        process_args = "{} --mask=?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a -min-len={} -max-len={} {} --format={}" \
+                       " --verbosity=1 --progress-every=1".format(
+                        location, min_length, max_length, hash_file, hash_type)
 
         # Adding maximum execution time to arguments, if specified
         if max_exec_time is not None:
@@ -135,7 +136,7 @@ class John:
     #   max_exec_time:  maximum time to execute         integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def markov(self, hash_type, hash_file, mask, max_exec_time):
+    def markov(self, hash_type, hash_file, mask, max_exec_time, location):
 
         # Setting a flag whether a maximum execution time was specified
         if max_exec_time is None:
@@ -144,8 +145,8 @@ class John:
             no_time = False
         # TODO: mask?
         # Arguments for opening the subprocess
-        process_args = "./john/run/john --markov {} --format={} --verbosity=1 --progress-every=1".format(hash_file,
-                                                                                                         hash_type)
+        process_args = ".{} --markov {} --format={} --verbosity=1 --progress-every=1".format(
+            location, hash_file, hash_type)
 
         if mask:
             process_args += " --mask"

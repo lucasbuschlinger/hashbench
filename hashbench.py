@@ -1,10 +1,10 @@
 import argparse
 from modules.utils import *
+from modules.hasher import *
 from modules.hashcat import *
 from modules.john import *
 import os
 import time
-
 
 # noinspection SpellCheckingInspection
 def main():
@@ -44,8 +44,18 @@ def main():
     parser.add_argument('-individualstats', action='store_true',
                         help="Flag to print out individual stats per run"
                              " (only takes effect when more than 1 run is performed)")
+    parser.add_argument('-generate', '-g', nargs=2, help="Generates N hashes from the supplied file every run",
+                        metavar=("N", "FILE"))
 
     args = parser.parse_args()
+    try:
+        config = load_config()
+    except ValueError as error:
+        print(str(error) + ". exiting...")
+        exit(1)
+
+    john_loc = config["HASHBENCH"]["location_john"]
+    hashcat_loc = config["HASHBENCH"]["location_hashcat"]
 
     # Calling the utility which maps the input hash to the input needed for the tools
     hashes = arg_changer(args.hash)
@@ -108,18 +118,26 @@ def main():
 
                 # Removing potfiles to have maximum work to do
                 try:
-                    os.remove('john/run/john.pot')
+                    os.remove(john_loc + '.pot')
                 except FileNotFoundError:
                     # If FileNotFoundError occurs we do not have to delete it
                     pass
                 try:
-                    os.remove('hashcat/hashcat.potfile')
+                    os.remove(hashcat_loc + '.potfile')
                 except FileNotFoundError:
                     # If FileNotFoundError occurs we do not have to delete it
                     pass
 
+                if args.generate is not None:
+                    try:
+                        generate_hashes(args.generate[1], int(args.generate[0]), args.hash)
+                    except ValueError:
+                        print("Could not generate hashes for %s, exiting..." % args.hash)
+                        exit(1)
+                    hash_file = "gen.hash"
+
                 john_start = time.time()
-                john_tmpout = john.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time)
+                john_tmpout = john.bruteforce(hashes[0], minlen, maxlen, hash_file, args.time, john_loc)
                 john_end = time.time() - john_start
 
                 john_out[0].append(john_tmpout[0])
@@ -128,7 +146,8 @@ def main():
                 john_times.append(john_end)
 
                 hashcat_start = time.time()
-                hashcat_tmpout = hashcat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time, args.disablemarkov)
+                hashcat_tmpout = hashcat.bruteforce(hashes[1], minlen, maxlen, hash_file, args.time,
+                                                    args.disablemarkov, hashcat_loc)
                 hashcat_end = time.time() - hashcat_start
 
                 hashcat_out[0].append(hashcat_tmpout[0])
@@ -171,18 +190,27 @@ def main():
             for var in range(args.multirun):
                 # Removing potfiles to have maximum work to do
                 try:
-                    os.remove('john/run/john.pot')
+                    os.remove(john_loc + '.pot')
                 except FileNotFoundError:
                     # If FileNotFoundError occurs we do not have to delete it
                     pass
                 try:
-                    os.remove('hashcat/hashcat.potfile')
+                    os.remove(hashcat_loc + '.potfile')
                 except FileNotFoundError:
                     # If FileNotFoundError occurs we do not have to delete it
                     pass
 
+                if args.generate is not None:
+                    try:
+                        generate_hashes(args.generate[1], int(args.generate[0]), args.hash)
+                    except ValueError:
+                        print("Could not generate hashes for %s, exiting..." % args.hash)
+                        exit(1)
+                    hash_file = "gen.hash"
+
                 john_start = time.time()
-                john_tmpout = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask, args.time)
+                john_tmpout = john.wordlist(hashes[0], hash_file, args.wordlistfile, rules[0], args.enablemask,
+                                            args.time, john_loc)
                 john_end = time.time() - john_start
 
                 john_out[0].append(john_tmpout[0])
@@ -191,7 +219,8 @@ def main():
                 john_times.append(john_end)
 
                 hashcat_start = time.time()
-                hashcat_tmpout = hashcat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time)
+                hashcat_tmpout = hashcat.wordlist(hashes[1], hash_file, args.wordlistfile, rules[1], args.time,
+                                                  hashcat_loc)
                 hashcat_end = time.time() - hashcat_start
 
                 hashcat_out[0].append(hashcat_tmpout[0])
@@ -229,13 +258,21 @@ def main():
             for var in range(args.multirun):
                 # Removing potfiles to have maximum work to do
                 try:
-                    os.remove('john/run/john.pot')
+                    os.remove(john + '.pot')
                 except FileNotFoundError:
                     # If FileNotFoundError occurs we do not have to delete it
                     pass
 
+                if args.generate is not None:
+                    try:
+                        generate_hashes(args.generate[1], int(args.generate[0]), args.hash)
+                    except ValueError:
+                        print("Could not generate hashes for %s, exiting..." % args.hash)
+                        exit(1)
+                    hash_file = "gen.hash"
+
                 john_start = time.time()
-                john_tmpout = john.markov(hashes[0], hash_file, args.enablemask, args.time)
+                john_tmpout = john.markov(hashes[0], hash_file, args.enablemask, args.time, john_loc)
                 john_end = time.time() - john_start
 
                 john_out[0].append(john_tmpout[0])

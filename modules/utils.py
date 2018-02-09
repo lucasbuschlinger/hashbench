@@ -2,6 +2,8 @@ import time
 import queue
 import statistics
 from copy import deepcopy
+import configparser
+import os.path
 
 # Helper to map the given hash type to the required format by john and hashcat respectively
 # noinspection SpellCheckingInspection
@@ -249,3 +251,27 @@ def quartiles_range(values):
 
     else:
         return 0
+
+
+def generate_config(config):
+    config['HASHBENCH'] = {'location_john': './john/run/john',
+                           'location_hashcat': './hashcat/hashcat'}
+    with open("hashbench.conf", "w") as configuration_file:
+        config.write(configuration_file)
+
+    print("No configuration file was found, generated one. For more info see doc/config.md")
+
+
+def load_config():
+    config = configparser.ConfigParser()
+    config.read("hashbench.conf")
+    if "HASHBENCH" not in config:
+        generate_config(config)
+
+    if "location_john" not in config["HASHBENCH"] or "location_hashcat" not in config["HASHBENCH"]\
+            or not os.path.isfile(config["HASHBENCH"]["location_john"]) \
+            or not os.path.isfile(config["HASHBENCH"]["location_hashcat"]):
+        raise ValueError("Configuration for tools not set properly, check configuration file.")
+
+    return config
+

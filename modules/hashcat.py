@@ -60,11 +60,11 @@ class Hashcat:
     #   max_exec_time:  the maximum time to execute         integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time):
+    def wordlist(self, hash_type, hash_file, wordlist, rules, max_exec_time, location):
 
         # Arguments for opening the subprocess
-        process_args = "./hashcat/hashcat -a0 -m{} {} {} --status --status-timer 1 -w 3 -O -o /dev/null" \
-                       " --machine-readable --quiet".format(hash_type, hash_file, wordlist)
+        process_args = "{} -a0 -m{} {} {} --status --status-timer 1 -w 3 -O -o /dev/null" \
+                       " --machine-readable --quiet".format(location, hash_type, hash_file, wordlist)
 
         # Adding rules to arguments, if specified
         if rules is not None:
@@ -97,7 +97,7 @@ class Hashcat:
     #   max_exec_time:  the maximum time to execute              integer
     # Returns:
     #   list containing (number if cracked hashes, total number of hashes, list of speeds)
-    def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time, no_markov):
+    def bruteforce(self, hash_type, min_length, max_length, hash_file, max_exec_time, no_markov, location):
 
         # Flag to specify whether a max execution time was given
         if max_exec_time is None:
@@ -106,9 +106,9 @@ class Hashcat:
             no_time = False
 
         # Arguments for opening the subprocess
-        process_args = "./hashcat/hashcat -m {} -a3 --increment --increment-min {} --increment-max {}" \
+        process_args = "{} -m {} -a3 --increment --increment-min {} --increment-max {}" \
                        " {} ?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a --status --status-timer 1 -w 3 -O --machine-readable" \
-                       " --quiet -o /dev/null".format(hash_type, min_length, max_length, hash_file)
+                       " --quiet -o /dev/null".format(location, hash_type, min_length, max_length, hash_file)
 
         # Adding flag to disable markov chains to arguments, if specified
         if no_markov:
