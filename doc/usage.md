@@ -54,7 +54,7 @@ __To benchmark using a wordlist attack without rules__:
 (Runs a 15 minute wordlist attack on SHA1 using the rockyou wordlist)
 
 __To benchmark using a wordlist attack with rules:__
-`python3 hashbench.py md5crypt wl -f resources/hashes/top10k.md5crypt -wlf resources/rockyou.wl -r resources/rules/OneRuleToRuleThemAll.rule OneRuleToRuleThemAll4 -t 30`
+`python3 hashbench.py md5crypt wl -f resources/hashes/top10k.md5crypt -wlf resources/rockyou.wl -r resources/rules/OneRuleToRuleThemAll.rule OneRuleToRuleThemAll -t 30`
 (Runs a 30 minute benchmark on MD5crypt with using the rockyou wordlist and applying the OneRule to it)
 
 __To benchmark with multiple runs on each tool:__
@@ -73,7 +73,8 @@ ___
 
 A quick word about rules and JohnTheRipper:
 In order to use (hashcat) rule files or any other rules you have to specify them in the john.conf in john/run.
-To make use of the "OneRule" insert the following:
+To make use of the "OneRule" insert the following :
+[//]: # "If you are reading this in plaintext: Don't include the backticks"
 ```
     [List.Rules:OneRuleToRuleThemAll]
     !! hashcat logic ON
