@@ -18,4 +18,4 @@ Tool 2 - JohnTheRipper (Community version, _**bleeding**_ branch!):
 The paths to each tool's executables can be set in the hashbench.conf
 (defaults are ./hashcat/hascat and ./john/run/john respectively)
 
-For usage see [doc/usage.md](../blob/doc/usage.md)
+For usage see [doc/usage.md](doc/usage.md)
