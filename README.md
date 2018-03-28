@@ -11,7 +11,7 @@ Tool 1 - hashcat:
 
 Tool 2 - JohnTheRipper (Community version, _**bleeding**_ branch!):
 - [Their github](https://github.com/magnumripper/JohnTheRipper)
-- tested version from 27 March 2018, commit: 6732567 (latest version on 28 March)
+- tested version from 27 March 2018, commit: e4e1571 (latest version on 28 March)
 - build according to john/doc/INSTALL-UBUNTU
 - Prerequisites: see john/doc/INSTALL-UBUNTU
 

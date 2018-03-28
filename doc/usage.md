@@ -39,6 +39,7 @@ Optional arguments:
 |-multirun           |   int   |   number of runs to perform on each tool, splits up execution time among runs |
 |-individualstats    |   bool  |   flag to print out statistics for individual runs |
 |-g/-generate        | int, str|   generates the given amount of new hashes from the supplied files (each run) |
+|-graphic            |   bool  |   flag to generate speed/cracked graphics
 
 ___
 
