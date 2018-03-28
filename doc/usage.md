@@ -19,8 +19,8 @@ Positional arguments (required):
 |          |   bruteforce  | perform a brute force attack |
 |          |       bf      | short for brute force |
 |          |    wordlist   | perform a wordlist attack |
-|          |       wl      | short for wordlist |
-|          |     markov    | perform a markov attack (only John) ||
+|          |       wl      | short for wordlist ||
+
 
 ___
 
@@ -36,7 +36,6 @@ Optional arguments:
 |-minlen             |   int   |   minimum length of password candidates |
 |-maxlen             |   int   |   maximum length of password candidates |
 |-disablemarkov      |   bool  |   flag to disable markov chains in hashcat (brute force only) |
-|-enablemask         |   bool  |   flag to enable mask mode on John's mode |
 |-multirun           |   int   |   number of runs to perform on each tool, splits up execution time among runs |
 |-individualstats    |   bool  |   flag to print out statistics for individual runs |
 |-g/-generate        | int, str|   generates the given amount of new hashes from the supplied files (each run) |

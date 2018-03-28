@@ -2,8 +2,10 @@ import hashlib
 import random
 
 
-# Helper to generate 'amount' many new hashes from a supplied file
 def generate_hashes(source, amount, hash_type):
+    """Calls the specific hashers.
+    Trade-off here was (almost) repetitive code vs rather confusing if/else-ing.
+    """
     if hash_type == "md5":
         __genMD5(source, amount)
     elif hash_type == "sha1":
@@ -13,7 +15,7 @@ def generate_hashes(source, amount, hash_type):
     elif hash_type == "sha512":
         __genSHA512(source, amount)
     else:
-        raise ValueError("Requested hash {} not available".format(hash_type))
+        raise ValueError("Requested hash {} not available for generation".format(hash_type))
 
 
 def __genMD5(source, amount):
