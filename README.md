@@ -1,5 +1,6 @@
 # HashBench
-_A framework to benchmark cracking hashes, written in Python 3._
+_A framework to benchmark cracking hashes, written in Python 3._  
+It does so by using actual test data one has to supply instead of using the integrated benchmark modes.
 ___
 ### Tools:
 The tools are integrated as git submodules.
