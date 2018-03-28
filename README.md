@@ -19,3 +19,6 @@ The paths to each tool's executables can be set in the hashbench.conf
 (defaults are ./hashcat/hashcat and ./john/run/john respectively).
 
 For usage see [doc/usage.md](doc/usage.md)
+
+---
+If you discover any bugs, please don't refrain from opening up issues.
